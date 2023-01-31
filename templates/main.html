@@ -7,9 +7,7 @@
 	<meta name="author" content="g.cherdakly@int-sys.ru">
     <title>{{.Title}}</title>
 	<style>
-    {{range .Stylesheets}}
-        {{ . }}
-    {{end}}
+    {{ printf "%s" .Stylesheet }}
 	</style>
 </head>
 <body>
