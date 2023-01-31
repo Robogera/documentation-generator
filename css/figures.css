@@ -1,0 +1,19 @@
+/* Numbered captions to put the images into */
+figcaption.numbered {
+	background-color: rgba(0, 0, 0, .12);
+	font: italic smaller;
+	text-align: center;
+}
+
+body {
+	counter-reset: figures;
+}
+
+figure figcaption.numbered {
+	counter-increment: figures;
+}
+
+figure figcaption.numbered:before {
+	content: 'Рис. ' counter(figures) ' - ';
+}
+

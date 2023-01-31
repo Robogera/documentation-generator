@@ -1,0 +1,23 @@
+h1,
+h2,
+h3,
+h4 {
+	font-weight: bold;
+	line-height: 1.250em;
+	text-transform: uppercase;
+}
+h1 {
+	font-size: 1.750em;
+	margin: 0 0 0.500em 0;
+}
+h2 {
+	font-size: 1.500em;
+	margin: 1.875em 0 -0.625em 0;
+}
+h3 {
+	font-size: 1.125em;
+	margin: 1.875em 0 0.938em 0;
+}
+h4 {
+	margin: 1.750em 0 0.938em 0;
+}

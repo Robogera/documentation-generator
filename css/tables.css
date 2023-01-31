@@ -1,0 +1,24 @@
+table.butt {
+	border-spacing: 0.0em;
+	width: 100%;
+}
+table.butt th {
+	background: rgba(0, 0, 0, .12);
+	font-weight: bold;
+	padding: 0.750em 1.000em;
+	text-align: left;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+table.butt td {
+	padding: 0.750em 1.000em;
+}
+table.butt tbody tr {
+	mix-blend-mode: multiply;
+}
+table.butt tbody tr:nth-child(even) {
+	background-color: rgba(0, 0, 0, .5);
+}
+table.butt tbody tr:nth-child(odd) {
+	background-color: rgba(0, 0, 0, .2);
+}
