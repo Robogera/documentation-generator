@@ -1,34 +1,51 @@
 package main
 
 import (
-    "log"
-    "os"
 	"github.com/alecthomas/participle/v2"
 	"github.com/alecthomas/participle/v2/lexer"
+	"log"
+	"os"
 )
 
 type FILE struct {
-	// Properties []*Property `@@*`
-    Entries []*Entry `(( @@ ) Newline Newline)*`
+	Entries []*Entry `@@*`
 }
 
 type Entry struct {
-    Pos lexer.Position
+	Pos lexer.Position
 
-    Command string ` "!" @Ident`
-    Paragraph string `| @Ident`
+	Paragraph *Paragraph ` ( @@`
+	Image     *Image     ` | @@`
+	Table     *Table     ` | @@`
+	List      *List      ` | @@ ) EOL`
+}
+
+type Paragraph struct {
+	Text string `@( Ident ( WordSeparator Ident )* PunctuationMark )`
+}
+
+type Image struct {
+	Path string `ImageDeclaration @( Ident "." ("png" | "jpg" | "jpeg") )`
+}
+
+type Table struct {
+	Name string `TableDeclaration @Ident`
+}
+
+type List struct {
+	Name string `ListDeclaration @Ident`
 }
 
 func parseSML(parser *participle.Parser[FILE], filename string) (*FILE, error) {
 	var err error
 
 	var ast *FILE
-    var contents []byte
+	var contents []byte
 
-    contents, err = os.ReadFile(filename)
-    if err != nil {
-        return nil, err
-    }
+	contents, err = os.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
 
 	ast, err = parser.ParseBytes("", contents)
 	if err != nil {
@@ -40,17 +57,21 @@ func parseSML(parser *participle.Parser[FILE], filename string) (*FILE, error) {
 
 func main() {
 
-    var SMLLexer *lexer.StatefulDefinition = lexer.MustSimple([]lexer.SimpleRule{
-        {"Ident", `[a-zA-Z_ ]+`},
-        {"Command", `!`},
-        {"Terminator", `;`},
-        {"Newline", `\n`},
-    })
+	var SMLLexer *lexer.StatefulDefinition = lexer.MustSimple([]lexer.SimpleRule{
+		{"Ident", `[a-zA-Z_]+`},
+		{"EOL", `[\n\r]+`},
+		{"TableDeclaration", `!Table +`},
+		{"ListDeclaration", `!List +`},
+		{"ImageDeclaration", `!Image +`},
+		{"WordSeparator", `[!\?.,;:]?[ ]`},
+		{"PunctuationMark", `[!\?.,;:]+`},
+	})
 
-    var SMLParser *participle.Parser[FILE] = participle.MustBuild[FILE](
-        participle.Lexer(SMLLexer),
-        participle.CaseInsensitive("Indent"),
-    )
+	var SMLParser *participle.Parser[FILE] = participle.MustBuild[FILE](
+		participle.Lexer(SMLLexer),
+		participle.CaseInsensitive("Indent"),
+		participle.CaseInsensitive("Line"),
+	)
 
 	var err error
 	var ast *FILE
@@ -62,8 +83,7 @@ func main() {
 
 	log.Printf("Err %+v", ast)
 
-    for _, entry := range ast.Entries {
-        log.Printf("%+v\n", entry)
-    }
+	for _, entry := range ast.Entries {
+		log.Printf("%+v\n", entry)
+	}
 }
-
