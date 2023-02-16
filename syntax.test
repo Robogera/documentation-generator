@@ -1,34 +1,4 @@
-# Text file of no particular purpose
+Hello, this is a simple sentence.
 
-## Kentucky Derby is Decadent and Depraved
-
-He grabbed my arm, urging me to have another, but I said I was overdue at the Press Club and hustled off to get my act together for the awful spectacle. At the airport newsstand I picked up a Courier-Journal and scanned the front page headlines: "Nixon Sends GI's into Cambodia to Hit Reds"... "B-52's Raid, then 20,000 GI's Advance 20 Miles"..."4,000 U.S. Troops Deployed Near Yale as Tension Grows Over Panther Protest." At the bottom of the page was a photo of Diane Crump, soon to become the first woman jockey ever to ride in the Kentucky Derby. The photographer had snapped her "stopping in the barn area to fondle her mount, Fathom." The rest of the paper was spotted with ugly war news and stories of "student unrest." There was no mention of any trouble brewing at a university in Ohio called Kent State.
-
-## Usable elements
-
-### Images
-
-!image space
-Here's a caption: Earthrise is a photograph of Earth and some of the Moon's surface that was taken from lunar orbit by astronaut William Anders on December 24, 1968, ...
-
-### Tables and lists
-
-!table red
-img donkeykong
-txt Donkey Kong, also shortened to DK, is a fictional gorilla in the Donkey Kong and Mario video game series, created by Shigeru Miyamoto. The original Donkey ...
-img space
-txt Earthrise is a photograph of Earth and some of the Moon's surface that was taken from lunar orbit by astronaut William Anders on December 24, 1968, ...
-
-!list
-This is a list
-Of cool things
-Feel free to add
-More entries
-
-### Colorful blocks
-
-!warning
-This is a warning block, displayed in bright neon red color. Read it, or something terrible might happen!
-
-!info
-This just an info block, displayed in light blue color. You can safely skip it.
+!image test.jpg
+Heres a caption: Earthrise is a photograph of Earth and some of the Moons surface.
