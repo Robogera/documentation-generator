@@ -14,26 +14,17 @@ type FILE struct {
 type Entry struct {
 	Pos lexer.Position
 
-	Paragraph *Paragraph ` ( @@`
-	Image     *Image     ` | @@`
-	Table     *Table     ` | @@`
-	List      *List      ` | @@ ) EOL`
+    Paragraph *Paragraph ` ( @@`
+    Image     *Image     ` | @@ ) EOL (EOL | EOF)`
 }
 
 type Paragraph struct {
-	Text string `@( Ident ( WordSeparator Ident )* PunctuationMark )`
+	Text string `@( Ident ( Punct? Whitespace Ident )* Punct )`
 }
 
 type Image struct {
-	Path string `ImageDeclaration @( Ident "." ("png" | "jpg" | "jpeg") )`
-}
-
-type Table struct {
-	Name string `TableDeclaration @Ident`
-}
-
-type List struct {
-	Name string `ListDeclaration @Ident`
+    Path string `"!image":Command Whitespace @Filename EOL`
+    Description *Paragraph `@@`
 }
 
 func parseSML(parser *participle.Parser[FILE], filename string) (*FILE, error) {
@@ -58,13 +49,13 @@ func parseSML(parser *participle.Parser[FILE], filename string) (*FILE, error) {
 func main() {
 
 	var SMLLexer *lexer.StatefulDefinition = lexer.MustSimple([]lexer.SimpleRule{
-		{"Ident", `[a-zA-Z_]+`},
-		{"EOL", `[\n\r]+`},
-		{"TableDeclaration", `!Table +`},
-		{"ListDeclaration", `!List +`},
-		{"ImageDeclaration", `!Image +`},
-		{"WordSeparator", `[!\?.,;:]?[ ]`},
-		{"PunctuationMark", `[!\?.,;:]+`},
+        {"Filename", `[a-zA-Z0-9-_]+\.[a-zA-Z]+`},
+        {"Command", `![a-z]+`},
+        {"Color", `#[0-9a-fA-F]{6}`},
+		{"Ident", `[a-zA-Z][a-zA-Z_]*`},
+		{"EOL", `[\n\r]{1}`},
+		{"Whitespace", `[ ]+`},
+		{"Punct", `[!\?.,;:]+`},
 	})
 
 	var SMLParser *participle.Parser[FILE] = participle.MustBuild[FILE](
@@ -76,7 +67,7 @@ func main() {
 	var err error
 	var ast *FILE
 
-	ast, err = parseSML(SMLParser, "test.sml")
+	ast, err = parseSML(SMLParser, "syntax.test")
 	if err != nil {
 		log.Panicf("Error: %s", err)
 	}
