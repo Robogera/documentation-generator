@@ -1,4 +1,4 @@
-module documentation-generator
+module github.com/documentation-generator
 
 go 1.19
 
