@@ -45,6 +45,9 @@ type List struct {
 	Paragraphs []*Paragraph `(EOL @@)*`
 }
 
+// ======================//
+// Text paragraphs
+// ======================//
 type Paragraph struct {
 	// A "hardcore" regexp filter that enforces correct grammars on the parsing stage
 	// was overkill and produced obscure error messages that are hard to interpret
@@ -55,11 +58,17 @@ type Paragraph struct {
 }
 
 type ParagraphElement struct {
-	Link *Link       `( @@`
-	Text *NormalText `| @@ )`
+	// Normal text just gets lumped together into big chunks
+	// stored in "NormalText" string
+	// And the special elements like bold text or urls are stored separately
+	Link     *Link       `( @@`
+	BoldText *BoldText   `| @@`
+	Text     *NormalText `| @@ )`
 }
 
 type Link struct {
+	// TODO: find way to not repeat this token construct in every elemnt declaration
+	// that just wraps around the text chunks
 	Text string `"[":OpenParen @( Ident | Whitespace | OpenParen | CloseParen | Punct )+ "]":CloseParen`
 	Url  string `"(":OpenParen @( Ident | Whitespace | OpenParen | CloseParen | Punct )+ ")":CloseParen`
 }
