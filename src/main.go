@@ -32,9 +32,9 @@ func main() {
 		// TODO: not sure if having a separate lexer token for command is a great idea
 		// Maybe find a way to distinguish basic paragraphs from command-prefixed structures
 		// in the parsing stage instead?
-		{"Command", `![a-z]+`},
 		{"Color", `#[0-9a-fA-F]{6}`},
-		{"Ident", `[a-zA-Zа-яА-Я][a-zA-Zа-яА-Я'_]*`},
+		{"Number", `[0-9]+`},
+		{"Ident", `[a-zA-Zа-яА-Я][a-zA-Zа-яА-Я0-9'_]*`},
 		{"OpenParen", `[\(\[]{1}`},
 		{"CloseParen", `[\)\]]{1}`},
 		{"EOL", `[\n\r]{1}`},

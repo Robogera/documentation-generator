@@ -4,9 +4,9 @@ import (
 	"github.com/alecthomas/participle/v2/lexer"
 )
 
-// =========================//
+// =========================
 // Basic structure of a file
-// =========================//
+// =========================
 type FILE struct {
 	// Entries are the basic components of the file
 	// Like paragraphs of text, tables, images, blocks, etc.
@@ -24,9 +24,9 @@ type Entry struct {
 	Paragraph *Paragraph `| @@ ) EOL (EOL | EOF)`
 }
 
-// ======================//
+// ===============
 // Warn/info boxes
-// ======================//
+// ===============
 type Box struct {
 	//Reference string     `"!info":Command Whitespace @Ident EOL`
 	Type       string       `"!":Punct @( "info":Ident | "warn":Ident )`
@@ -41,13 +41,13 @@ type Image struct {
 }
 
 type List struct {
-	Reference  string       `"!list":Command Whitespace @Ident`
+    Reference  string       `"!":Punct "list":Ident Whitespace @Ident`
 	Paragraphs []*Paragraph `(EOL @@)*`
 }
 
-// ======================//
+// ===============
 // Text paragraphs
-// ======================//
+// ===============
 type Paragraph struct {
 	// A "hardcore" regexp filter that enforces correct grammars on the parsing stage
 	// was overkill and produced obscure error messages that are hard to interpret
