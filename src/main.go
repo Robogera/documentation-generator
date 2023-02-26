@@ -67,7 +67,7 @@ func main() {
 	var err error
 	var ast *FILE
 
-	ast, err = parseSML(SMLParser, "syntax.test")
+	ast, err = parseSML(SMLParser, "input/syntax.test")
 	if err != nil {
 		log.Panicf("Error: %s", err)
 	}
