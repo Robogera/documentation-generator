@@ -29,20 +29,20 @@ type Entry struct {
 // ======================//
 type Box struct {
 	//Reference string     `"!info":Command Whitespace @Ident EOL`
-	Type      string       `"!":Punct @( "info":Ident | "warn":Ident )`
-	Reference string       `Whitespace @Ident`
-	Entries   []*Paragraph `(EOL @@)*`
+	Type       string       `"!":Punct @( "info":Ident | "warn":Ident )`
+	Reference  string       `Whitespace @Ident`
+	Paragraphs []*Paragraph `(EOL @@)*`
 }
 
 type Image struct {
-    Reference string `"!":Punct "img":Ident Whitespace @Ident`
-	Path        string     `Whitespace @("/":Special? (Ident "/":Special)* Ident "." Ident) EOL`
-	Description *Paragraph `@@`
+	Reference  string       `"!":Punct "img":Ident Whitespace @Ident`
+	Path       string       `Whitespace @("/":Special? (Ident "/":Special)* Ident "." Ident)`
+	Paragraphs []*Paragraph `(EOL @@)*`
 }
 
 type List struct {
-	Reference string       `"!list":Command Whitespace @Ident`
-	Entries   []*Paragraph `(EOL @@)*`
+	Reference  string       `"!list":Command Whitespace @Ident`
+	Paragraphs []*Paragraph `(EOL @@)*`
 }
 
 type Paragraph struct {
