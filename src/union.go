@@ -12,8 +12,10 @@ import (
 	"reflect"
 )
 
+// Union types should satisfy this interface
+// by having a blank Union method
 type ParserUnionType interface {
-	*Entry | *ParagraphElement
+	Union()
 }
 
 func unionType[T ParserUnionType](data_structure T) (entry_type string, err error) {

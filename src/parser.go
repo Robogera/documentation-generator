@@ -33,6 +33,9 @@ type Entry struct {
 	Paragraph *Paragraph `| @@ ) EOL (EOL | EOF)`
 }
 
+// Stub function for union types to satisfy the ParserUnionType interface
+func (entry Entry) Union() {}
+
 // ===============
 // Warn/info boxes
 // ===============
@@ -98,6 +101,9 @@ type ParagraphElement struct {
 	Bold *Bold `| @@`
 	Text *Text `| @@ )`
 }
+
+// Stub function for union types to satisfy the ParserUnionType interface
+func (elem ParagraphElement) Union() {}
 
 type Link struct {
 	Text *Text `"[":OpenParen @@ "]":CloseParen`
