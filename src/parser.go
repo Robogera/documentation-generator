@@ -36,12 +36,23 @@ type Box struct {
 
 type Image struct {
 	Reference  string       `"!":Punct "img":Ident Whitespace @Ident`
-	Path       string       `Whitespace @("/":Special? (Ident "/":Special)* Ident "." Ident)`
+	Path       *Path        `Whitespace @@`
 	Paragraphs []*Paragraph `(EOL @@)*`
 }
 
 type List struct {
 	Reference  string       `"!":Punct "list":Ident Whitespace @Ident`
+	Paragraphs []*Paragraph `(EOL @@)+`
+}
+
+type Table struct {
+	Reference string `"!":Punct "table":Ident Whitespace @Ident`
+	Title     *Text  `Whitespace @@`
+	Rows      []*Row `@@+`
+}
+
+type Row struct {
+	Paths      []*Path      `EOL "img":Ident (Whitespace @@)`
 	Paragraphs []*Paragraph `(EOL @@)+`
 }
 
@@ -78,4 +89,8 @@ type Bold struct {
 
 type Text struct {
 	Text string `@( Ident | Number | Whitespace | OpenParen | CloseParen | Punct )+`
+}
+
+type Path struct {
+	Path string `@("/":Special? (Ident "/":Special)* Ident "." Ident)`
 }
