@@ -86,16 +86,11 @@ type Row struct {
 // Text paragraphs
 // ===============
 type Paragraph struct {
-	// A "hardcore" regexp filter that enforces correct grammars on the parsing stage
-	// was overkill and produced obscure error messages that are hard to interpret
-	// TODO: check for basic mistakes like double whitespace, no punctuation, no capital letter, etc
-	// after the parsing stage
-	// Text string `@( Ident ( Punct? Whitespace OpenParen? Ident CloseParen? )* Punct )`
 	Element []*ParagraphElement `@@+`
 }
 
 type ParagraphElement struct {
-    Pos lexer.Position
+	Pos lexer.Position
 	// Normal text just gets lumped together into big chunks
 	// stored in "NormalText" string
 	// And the special elements like bold text or urls are stored separately
