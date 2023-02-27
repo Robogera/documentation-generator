@@ -22,9 +22,12 @@ type FILE struct {
 }
 
 type Entry struct {
+	// Position saved for better error messaging past the lexing and parsing
+	// stages
 	Pos lexer.Position
 
 	Image     *Image     `( @@`
+	Table     *Table     `| @@`
 	Box       *Box       `| @@`
 	List      *List      `| @@`
 	Paragraph *Paragraph `| @@ ) EOL (EOL | EOF)`
@@ -34,7 +37,7 @@ type Entry struct {
 // Warn/info boxes
 // ===============
 type Box struct {
-	Type       string       `"!":Punct @( "info":Ident | "warn":Ident )`
+	Type       string       `@( "!info":Command | "!warn":Command )`
 	Reference  string       `Whitespace @Ident`
 	Paragraphs []*Paragraph `(EOL @@)+`
 }
@@ -43,7 +46,7 @@ type Box struct {
 // Single images
 // =============
 type Image struct {
-	Reference  string       `"!":Punct "img":Ident Whitespace @Ident`
+	Reference  string       `"!img":Command Whitespace @Ident`
 	Path       *Path        `Whitespace @@`
 	Paragraphs []*Paragraph `(EOL @@)*`
 }
@@ -52,9 +55,9 @@ type Image struct {
 // Ordered lists
 // =============
 type List struct {
-    // TODO: add unordered lists
-    // (would require some syntax change to distinguish them)
-	Reference  string       `"!":Punct "list":Ident Whitespace @Ident`
+	// TODO: add unordered lists
+	// (would require some syntax change to distinguish them)
+	Reference  string       `"!list":Command Whitespace @Ident`
 	Paragraphs []*Paragraph `(EOL @@)+`
 }
 
@@ -62,16 +65,21 @@ type List struct {
 // Tables with images
 // ==================
 type Table struct {
-    // TODO: add colors
-	Reference string `"!":Punct "table":Ident Whitespace @Ident`
+	// TODO: add colors
+	Reference string `"!table":Command Whitespace @Ident`
 	Title     *Text  `Whitespace @@`
-	Rows      []*Row `@@+`
+	Rows      []*Row `(EOL @@)+`
+}
+
+type Path struct {
+	// Used by multiple file elements
+	Path string `@("/":Special? (Ident "/":Special)* Ident "." Ident)`
 }
 
 type Row struct {
-    // TODO: (maybe) make it possible to have multiple paragraphs per row
-	Paths      []*Path      `EOL "img":Ident (Whitespace @@)`
-	Paragraph *Paragraph `EOL @@`
+	// TODO: (maybe) make it possible to have multiple paragraphs per row
+	Paths     []*Path    `"img":Ident (Whitespace @@)`
+	Paragraph *Paragraph `EOL "txt":Ident Whitespace @@`
 }
 
 // ===============
@@ -106,9 +114,5 @@ type Bold struct {
 }
 
 type Text struct {
-	Text string `@( Ident | Number | Whitespace | OpenParen | CloseParen | Punct )+`
-}
-
-type Path struct {
-	Path string `@("/":Special? (Ident "/":Special)* Ident "." Ident)`
+	Text string `@( Ident | RusWord | Number | Whitespace | OpenParen | CloseParen | Punct )+`
 }

@@ -29,9 +29,11 @@ func parseSML(parser *participle.Parser[FILE], filename string) (*FILE, error) {
 func main() {
 
 	var SMLLexer *lexer.StatefulDefinition = lexer.MustSimple([]lexer.SimpleRule{
+        {"Command", `![a-z]+`},
 		{"Color", `#[0-9a-fA-F]{6}`},
 		{"Number", `[0-9]+`},
-		{"Ident", `[a-zA-Zа-яА-Я][a-zA-Zа-яА-Я0-9'_]*`},
+		{"Ident", `[a-zA-Z][a-zA-Z0-9_-]*`},
+        {"RusWord", `[а-яА-ЯёЁ]+`},
 		{"OpenParen", `[\(\[]{1}`},
 		{"CloseParen", `[\)\]]{1}`},
 		{"EOL", `[\n\r]{1}`},
