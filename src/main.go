@@ -29,9 +29,6 @@ func parseSML(parser *participle.Parser[FILE], filename string) (*FILE, error) {
 func main() {
 
 	var SMLLexer *lexer.StatefulDefinition = lexer.MustSimple([]lexer.SimpleRule{
-		// TODO: not sure if having a separate lexer token for command is a great idea
-		// Maybe find a way to distinguish basic paragraphs from command-prefixed structures
-		// in the parsing stage instead?
 		{"Color", `#[0-9a-fA-F]{6}`},
 		{"Number", `[0-9]+`},
 		{"Ident", `[a-zA-Zа-яА-Я][a-zA-Zа-яА-Я0-9'_]*`},
