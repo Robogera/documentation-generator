@@ -38,21 +38,11 @@ func main() {
 	}
 
 	for _, entry := range syntax_tree.Entries {
-        entry_type, err := unionType(entry)
+        contents, err := entry.Serve()
         if err != nil {
-            log.Printf("Reader: invalid Entry: %s", err)
+            log.Printf("Entry invalid, skipping: %s\n", err)
+            continue
         }
-        switch entry_type {
-        case "*main.Paragraph":
-            log.Printf("Paragraph found at %s\n", entry.Pos.String())
-        case "*main.List":
-            log.Printf("List found at %s\n", entry.Pos.String())
-        case "*main.Image":
-            log.Printf("Image found at %s\n", entry.Pos.String())
-        case "*main.Table":
-            log.Printf("Table found at %s\n", entry.Pos.String())
-        case "*main.Box":
-            log.Printf("Box found at %s\n", entry.Pos.String())
-        }
+        log.Printf("%s", string(contents))
 	}
 }

@@ -34,7 +34,8 @@ func unionType[T ParserUnionType](data_structure T) (entry_type string, err erro
 	reflected_value := reflect.ValueOf(data_structure).Elem()
 	var field reflect.Value
 
-	// Iterating from 1 because
+	// Iterating from 1 because the Field(0) is lexer.Position which is not nil
+    // Unless parser failed
 	for i := 1; i < reflected_value.NumField(); i++ {
 		field = reflected_value.Field(i)
 		if !reflect.ValueOf(field.Interface()).IsNil() {
