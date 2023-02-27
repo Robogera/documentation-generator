@@ -4,6 +4,12 @@ import (
 	"github.com/alecthomas/participle/v2/lexer"
 )
 
+// ==============================================
+// All declarative parsing rules go here
+// Use verbose struct syntax insead of interface
+// syntax whenever possible as it is more readable
+//================================================
+
 // =========================
 // Basic structure of a file
 // =========================
@@ -33,18 +39,30 @@ type Box struct {
 	Paragraphs []*Paragraph `(EOL @@)+`
 }
 
+// =============
+// Single images
+// =============
 type Image struct {
 	Reference  string       `"!":Punct "img":Ident Whitespace @Ident`
 	Path       *Path        `Whitespace @@`
 	Paragraphs []*Paragraph `(EOL @@)*`
 }
 
+// =============
+// Ordered lists
+// =============
 type List struct {
+    // TODO: add unordered lists
+    // (would require some syntax change to distinguish them)
 	Reference  string       `"!":Punct "list":Ident Whitespace @Ident`
 	Paragraphs []*Paragraph `(EOL @@)+`
 }
 
+// ==================
+// Tables with images
+// ==================
 type Table struct {
+    // TODO: add colors
 	Reference string `"!":Punct "table":Ident Whitespace @Ident`
 	Title     *Text  `Whitespace @@`
 	Rows      []*Row `@@+`
