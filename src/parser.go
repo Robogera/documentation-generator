@@ -51,8 +51,9 @@ type Table struct {
 }
 
 type Row struct {
+    // TODO: (maybe) make it possible to have multiple paragraphs per row
 	Paths      []*Path      `EOL "img":Ident (Whitespace @@)`
-	Paragraphs []*Paragraph `(EOL @@)+`
+	Paragraph *Paragraph `EOL @@`
 }
 
 // ===============
