@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
 	"github.com/alecthomas/participle/v2/lexer"
-	"reflect"
 )
 
 // ==============================================
@@ -15,7 +13,7 @@ import (
 // =========================
 // Basic structure of a file
 // =========================
-type FILE struct {
+type Document struct {
 	// Entries are the basic components of the file
 	// Like paragraphs of text, tables, images, blocks, etc.
 	// They are separated by two EOL tokens as specified in
@@ -33,34 +31,6 @@ type Entry struct {
 	Box       *Box       `| @@`
 	List      *List      `| @@`
 	Paragraph *Paragraph `| @@ ) EOL (EOL | EOF)`
-}
-
-func (entry Entry) Type() (entry_type string, err error) {
-	// Returns entry type by searching for the first non-nil Field
-	// that is not Pos (which is always non-nil op successful parse)
-	// Returns error if all fields are nil or reflect panics
-	// Which really shouldn't happen regardless of user input but
-	// can happen if ENtry struct is implemented wrong
-	defer func() {
-		if recovered := recover(); recovered != nil {
-			entry_type = ""
-			err = fmt.Errorf("Reflect paniced, Entry struct implemented incorrectly?")
-		}
-	}()
-
-	reflected_value := reflect.ValueOf(entry)
-	var field reflect.Value
-
-	// Iterating from 1 because
-	for i := 1; i < reflected_value.NumField(); i++ {
-		field = reflected_value.Field(i)
-		if !reflect.ValueOf(field.Interface()).IsNil() {
-			return field.Type().String(), nil
-		}
-	}
-
-	return "", fmt.Errorf("All fields are nil, parser failed?")
-
 }
 
 // ===============
@@ -125,6 +95,7 @@ type Paragraph struct {
 }
 
 type ParagraphElement struct {
+    Pos lexer.Position
 	// Normal text just gets lumped together into big chunks
 	// stored in "NormalText" string
 	// And the special elements like bold text or urls are stored separately
