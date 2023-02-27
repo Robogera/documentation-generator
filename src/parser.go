@@ -41,7 +41,7 @@ type Image struct {
 }
 
 type List struct {
-    Reference  string       `"!":Punct "list":Ident Whitespace @Ident`
+	Reference  string       `"!":Punct "list":Ident Whitespace @Ident`
 	Paragraphs []*Paragraph `(EOL @@)+`
 }
 
@@ -61,23 +61,21 @@ type ParagraphElement struct {
 	// Normal text just gets lumped together into big chunks
 	// stored in "NormalText" string
 	// And the special elements like bold text or urls are stored separately
-	Link     *Link       `( @@`
-	BoldText *BoldText   `| @@`
-	Text     *NormalText `| @@ )`
+	Link *Link `( @@`
+	Bold *Bold `| @@`
+	Text *Text `| @@ )`
 }
 
 type Link struct {
-	// TODO: find way to not repeat this token construct in every elemnt declaration
-	// that just wraps around the text chunks
-	Text string `"[":OpenParen @( Ident | Whitespace | OpenParen | CloseParen | Punct )+ "]":CloseParen`
-    // Urls can only be local references for now
-	Url  string `"(":OpenParen @Ident ")":CloseParen`
+	Text *Text `"[":OpenParen @@ "]":CloseParen`
+	// Urls can only be local references for now
+	Url string `"(":OpenParen @Ident ")":CloseParen`
 }
 
-type NormalText struct {
-	Text string `@( Ident | Whitespace | OpenParen | CloseParen | Punct )+`
+type Bold struct {
+	Text *Text `"*":Special @@ "*":Special`
 }
 
-type BoldText struct {
-	Text string `"*":Special @( Ident | Whitespace | OpenParen | CloseParen | Punct )+ "*":Special`
+type Text struct {
+	Text string `@( Ident | Number | Whitespace | OpenParen | CloseParen | Punct )+`
 }
