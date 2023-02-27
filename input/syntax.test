@@ -1,18 +1,20 @@
-Hello this is a simple sentence
+Параграф текста. Можно писать сюда всякую всячину: на русском или английском. Any combination of words, whitespaces, punctuation and parentheses is valid (for now). А также числа 1337 69 420
 
-!image test.jpg
-Heres a caption ()Earthrise is, a photograph! of Земля Earth and some of the Moons surface!!!
+!img space space.jpg
+Фотография космоса. Под фото можно писать аннотацию в виде параграфа текста. НА него распространяются те же правила? что и на обычный параграф.
 
-!warn start
-Dont touch the big red button
+!warn eulawarning
+Это параграф высокой важности. Он будет помещен в рамочку красного цвета.
 
-!info stuff
-Touching the big red buton is very dangerous
+!table tbl Таблица
+img test.jpg
+txt В таблице можно размещать картинки и параграфы текста.
+img test.jpg
+txt А можно размещать несколько картинок.
 
-!list test
-qwe
-Ltwerwer Asdasd asda asd asd
-Hello hello hello
-И на русском
-Привет
+!info infobox
+Это информационный параграф, будет выделен рамочкой синего цвета.
 
+!list somelist
+Это - упорядоченный лист
+Каждый параграф под ним будет представлен отдельным элементом
