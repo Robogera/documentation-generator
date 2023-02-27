@@ -31,7 +31,7 @@ type Box struct {
 	//Reference string     `"!info":Command Whitespace @Ident EOL`
 	Type       string       `"!":Punct @( "info":Ident | "warn":Ident )`
 	Reference  string       `Whitespace @Ident`
-	Paragraphs []*Paragraph `(EOL @@)*`
+	Paragraphs []*Paragraph `(EOL @@)+`
 }
 
 type Image struct {
@@ -42,7 +42,7 @@ type Image struct {
 
 type List struct {
     Reference  string       `"!":Punct "list":Ident Whitespace @Ident`
-	Paragraphs []*Paragraph `(EOL @@)*`
+	Paragraphs []*Paragraph `(EOL @@)+`
 }
 
 // ===============
@@ -70,7 +70,8 @@ type Link struct {
 	// TODO: find way to not repeat this token construct in every elemnt declaration
 	// that just wraps around the text chunks
 	Text string `"[":OpenParen @( Ident | Whitespace | OpenParen | CloseParen | Punct )+ "]":CloseParen`
-	Url  string `"(":OpenParen @( Ident | Whitespace | OpenParen | CloseParen | Punct )+ ")":CloseParen`
+    // Urls can only be local references for now
+	Url  string `"(":OpenParen @Ident ")":CloseParen`
 }
 
 type NormalText struct {
