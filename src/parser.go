@@ -48,7 +48,7 @@ type Box struct {
 type Image struct {
 	Reference  string       `"!img":Command Whitespace @Ident`
 	Path       *Path        `Whitespace @@`
-	Paragraphs []*Paragraph `(EOL @@)*`
+	Paragraphs []*Paragraph `(EOL @@)+`
 }
 
 // =============
