@@ -91,7 +91,7 @@ type Paragraph struct {
 	// TODO: check for basic mistakes like double whitespace, no punctuation, no capital letter, etc
 	// after the parsing stage
 	// Text string `@( Ident ( Punct? Whitespace OpenParen? Ident CloseParen? )* Punct )`
-	Element *ParagraphElement `@@+`
+	Element []*ParagraphElement `@@+`
 }
 
 type ParagraphElement struct {
