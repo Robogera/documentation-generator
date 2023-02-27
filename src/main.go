@@ -23,7 +23,7 @@ func main() {
 		{"Special", `[\*\\/]`},
 	})
 
-	document_parser := participle.MustBuild[FILE](
+	document_parser := participle.MustBuild[Document](
 		participle.Lexer(document_lexer),
 	)
 
@@ -38,7 +38,7 @@ func main() {
 	}
 
 	for _, entry := range syntax_tree.Entries {
-        entry_type, err := entry.Type()
+        entry_type, err := unionType(entry)
         if err != nil {
             log.Printf("Reader: invalid Entry: %s", err)
         }
