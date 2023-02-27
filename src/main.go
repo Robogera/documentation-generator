@@ -7,33 +7,14 @@ import (
 	"os"
 )
 
-func parseSML(parser *participle.Parser[FILE], filename string) (*FILE, error) {
-	var err error
-
-	var ast *FILE
-	var contents []byte
-
-	contents, err = os.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
-
-	ast, err = parser.ParseBytes("", contents)
-	if err != nil {
-		return nil, err
-	}
-
-	return ast, nil
-}
-
 func main() {
 
-	var SMLLexer *lexer.StatefulDefinition = lexer.MustSimple([]lexer.SimpleRule{
-        {"Command", `![a-z]+`},
+	document_lexer := lexer.MustSimple([]lexer.SimpleRule{
+		{"Command", `![a-z]+`},
 		{"Color", `#[0-9a-fA-F]{6}`},
 		{"Number", `[0-9]+`},
 		{"Ident", `[a-zA-Z][a-zA-Z0-9_-]*`},
-        {"RusWord", `[а-яА-ЯёЁ]+`},
+		{"RusWord", `[а-яА-ЯёЁ]+`},
 		{"OpenParen", `[\(\[]{1}`},
 		{"CloseParen", `[\)\]]{1}`},
 		{"EOL", `[\n\r]{1}`},
@@ -42,22 +23,36 @@ func main() {
 		{"Special", `[\*\\/]`},
 	})
 
-	var SMLParser *participle.Parser[FILE] = participle.MustBuild[FILE](
-		participle.Lexer(SMLLexer),
-		participle.CaseInsensitive("Indent"),
+	document_parser := participle.MustBuild[FILE](
+		participle.Lexer(document_lexer),
 	)
 
-	var err error
-	var ast *FILE
-
-	ast, err = parseSML(SMLParser, "input/syntax.test")
+	file_contents, err := os.ReadFile("input/syntax.test")
 	if err != nil {
-		log.Panicf("Error: %s", err)
+		log.Fatalf("Init: Error: File could not be read: %s\n", err)
 	}
 
-	log.Printf("Err %+v", ast)
+	syntax_tree, err := document_parser.ParseBytes("", file_contents)
+	if err != nil {
+		log.Fatalf("Parser: Error: File could not be parsed: %s\n", err)
+	}
 
-	for _, entry := range ast.Entries {
-		log.Printf("%+v\n", entry)
+	for _, entry := range syntax_tree.Entries {
+        entry_type, err := entry.Type()
+        if err != nil {
+            log.Printf("Reader: invalid Entry: %s", err)
+        }
+        switch entry_type {
+        case "*main.Paragraph":
+            log.Printf("Paragraph found at %s\n", entry.Pos.String())
+        case "*main.List":
+            log.Printf("List found at %s\n", entry.Pos.String())
+        case "*main.Image":
+            log.Printf("Image found at %s\n", entry.Pos.String())
+        case "*main.Table":
+            log.Printf("Table found at %s\n", entry.Pos.String())
+        case "*main.Box":
+            log.Printf("Box found at %s\n", entry.Pos.String())
+        }
 	}
 }
