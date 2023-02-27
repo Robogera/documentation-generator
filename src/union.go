@@ -27,7 +27,7 @@ func unionType[T ParserUnionType](data_structure T) (entry_type string, err erro
 	defer func() {
 		if recovered := recover(); recovered != nil {
 			entry_type = ""
-			err = fmt.Errorf("Reflect paniced, Entry struct implemented incorrectly?")
+			err = fmt.Errorf("Reflect paniced, invalid data struct implementation")
 		}
 	}()
 
@@ -42,5 +42,5 @@ func unionType[T ParserUnionType](data_structure T) (entry_type string, err erro
 		}
 	}
 
-	return "", fmt.Errorf("All fields are nil, parser failed?")
+	return "", fmt.Errorf("All fields are nil, possible parser failure")
 }
