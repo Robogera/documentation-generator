@@ -28,7 +28,6 @@ type Entry struct {
 // Warn/info boxes
 // ===============
 type Box struct {
-	//Reference string     `"!info":Command Whitespace @Ident EOL`
 	Type       string       `"!":Punct @( "info":Ident | "warn":Ident )`
 	Reference  string       `Whitespace @Ident`
 	Paragraphs []*Paragraph `(EOL @@)+`
