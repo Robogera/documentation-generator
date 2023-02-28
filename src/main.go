@@ -5,6 +5,8 @@ import (
 	"github.com/alecthomas/participle/v2/lexer"
 	"log"
 	"os"
+    "path/filepath"
+    "text/template"
 )
 
 func main() {
@@ -21,7 +23,7 @@ func main() {
 		{"CloseParen", `\)`},
 		{"EOL", `[\n\r]{1}`},
 		{"Whitespace", `[ ]+`},
-		{"Punct", `[!\?.,;:\-']+`},
+		{"Punct", `[!\?.,;:\-'"]+`},
 		{"Special", `[\*\\/]`},
 	})
 
@@ -38,13 +40,53 @@ func main() {
 	if err != nil {
 		log.Fatalf("Parser: Error: File could not be parsed: %s\n", err)
 	}
+    
+    processed_body := make([][]byte, len(syntax_tree.Entries))
 
-	for _, entry := range syntax_tree.Entries {
+	for i, entry := range syntax_tree.Entries {
         contents, err := entry.Serve()
         if err != nil {
             log.Printf("Entry invalid, skipping: %s\n", err)
             continue
         }
-        log.Printf("%s", string(contents))
+        processed_body[i] = contents
 	}
+
+    stylesheets, err := os.ReadDir("./css")
+
+    processed_css := make([][]byte, len(stylesheets))
+
+    for i, stylesheet := range stylesheets {
+        contents, err := os.ReadFile(filepath.Join("./css", stylesheet.Name()))
+        if err != nil {
+            log.Printf("Error: %s. Stylesheet %s invalid. Skipping...\n", err, stylesheet.Name())
+            continue
+        }
+        processed_css[i] = contents
+    }
+
+    processed_data := struct{
+        Style [][]byte
+        Body [][]byte
+    }{
+        Style: processed_css,
+        Body: processed_body,
+    }
+
+
+    tmpl, err := template.New("main.html").ParseFiles("templates/main.html")
+    if err != nil {
+        log.Fatalf("Template reading error: %s\n", err)
+    }
+
+    dest, err := os.Create("output/index.html")
+    if err != nil {
+        log.Fatalf("Error creating file: %s\n", err)
+    }
+    defer dest.Close()
+
+    err = tmpl.Execute(dest, processed_data)
+    if err != nil {
+        log.Fatalf("Error writing to ouput: %s\n", err)
+    }
 }

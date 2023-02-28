@@ -4,15 +4,15 @@
 	vertical-align: baseline;
 }
 html {
-	background: hsl(0, 0%, 92%);
-	color: hsl(0, 0%, 25%);
+	background: #4C566A;
+	color: #E5E9F0;
 	font-family: Arial, sans-serif;
 	font-size: calc(0.875em + .2vw);
 	line-height: 1.625em;
 	margin: 0 auto;
-	max-width: 46em;
+	max-width: 54em;
 	padding: 4% 1.250em 5em;
 }
 body {
-	animation: fadein 1.2s;
+	animation: fadein 1.0s;
 }
