@@ -41,7 +41,7 @@ func (image Image) Serve() ([]byte, error) {
     }
 
     tmpl, err := template.New("image").Parse(
-        "<figure name={{ .Reference }}>\n<img src=\"{{ printf \"%s\" .Path }}\">\n<figcaption>{{ range .Paragraphs }}{{ printf \"%s\" . }}{{ end }}</figcaption>\n/figure>")
+        "<figure name={{ .Reference }}>\n<img src=\"{{ printf \"%s\" .Path }}\">\n<figcaption>{{ range .Paragraphs }}{{ printf \"%s\" . }}{{ end }}</figcaption>\n/</figure>")
     if err != nil {
         return nil, err
     }
