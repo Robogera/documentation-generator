@@ -13,11 +13,6 @@ type Row struct {
 	Paragraph *Paragraph `EOL "txt":Ident Whitespace @@`
 }
 
-type Path struct {
-	// Used by multiple file elements
-	Path string `@("/":Special? (Ident "/":Special)* Ident "." Ident)`
-}
-
 func (table Table) Serve() ([]byte, error) {
     return nil, nil
 }
