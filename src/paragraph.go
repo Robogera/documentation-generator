@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/alecthomas/participle/v2/lexer"
-    "text/template"
+	"text/template"
 )
 
 type Paragraph struct {
@@ -12,16 +12,36 @@ type Paragraph struct {
 }
 
 func (paragraph Paragraph) Serve() ([]byte, error) {
-	buf := new(bytes.Buffer)
-	for _, elem := range paragraph.Element {
+	processed_elements := make([][]byte, len(paragraph.Element))
+	for i, elem := range paragraph.Element {
 		contents, err := elem.Serve()
 		if err != nil {
 			return nil, err
 		}
-		buf.Write(contents)
+		processed_elements[i] = contents
 	}
+
+	tmpl, err := template.New("paragraph").Parse(
+		"<p>{{ range . }}{{ printf \"%s\" . }}{{ end }}</p>",
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	buf := new(bytes.Buffer)
+
+	err = tmpl.Execute(buf, processed_elements)
+	if err != nil {
+		return nil, err
+	}
+
 	result := make([]byte, buf.Len())
-	_, err := buf.Read(result)
+
+	_, err = buf.Read(result)
+	if err != nil {
+		return nil, err
+	}
+
 	return result, err
 }
 
@@ -72,20 +92,20 @@ func (elem ParagraphElement) Serve() ([]byte, error) {
 
 func serve(data_struct any, template_string string) ([]byte, error) {
 	buf := new(bytes.Buffer)
-    tmpl, err := template.New("new").Parse(template_string)
-    if err != nil {
-        return nil, err
-    }
-    err = tmpl.Execute(buf, data_struct)
-    if err != nil {
-        return nil, err
-    }
+	tmpl, err := template.New("new").Parse(template_string)
+	if err != nil {
+		return nil, err
+	}
+	err = tmpl.Execute(buf, data_struct)
+	if err != nil {
+		return nil, err
+	}
 
-    result := make([]byte, buf.Len())
-    _, err = buf.Read(result)
-    if err != nil {
-        return nil, err
-    }
+	result := make([]byte, buf.Len())
+	_, err = buf.Read(result)
+	if err != nil {
+		return nil, err
+	}
 
 	return result, nil
 }
