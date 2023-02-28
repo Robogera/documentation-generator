@@ -38,7 +38,10 @@ func (table Table) Serve() ([]byte, error) {
 		}
 	}
 
-	processed_title, err := serve(table.Title.Text, `{{ .Text }}`)
+	processed_title, err := serve(table.Title, `{{ .Text }}`)
+    if err != nil {
+        return nil, err
+    }
 
 	processed_data := struct {
 		Title     []byte
