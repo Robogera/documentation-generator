@@ -1,23 +1,29 @@
 .back-button,
 .top-button {
-	background: hsl(0, 0, 25%);
-	border-radius: 4em;
-	box-shadow: 0 0.250em 0.250em rgba(0, 0, 0, .15);
-	color: hsl(0, 0, 92%);
-	font-size: 2em;
-	position: fixed;
-	right: 1em;
-	bottom: 1em;
-	width: 1.5em;
-	height: 1.5em;
-	line-height: 1.375em;
-	text-align: center;
+    text-decoration: none;
+    position: fixed;
+    border: 0;
+    padding: 0.5em;
+    font-size: 2.5em;
+    text-align: center;
+    align-items: center;
+    line-height: 1em;
+    color: #E5E9F0;
+    border-radius: 4em;
+    background-color: #2E3440;
+}
+.top-button {
+	right: 10px;
+	bottom: calc(2.5em + 10px);
+}
+.back-button {
+	right: 10px;
+	bottom: 10px;
 }
 .back-button:hover,
 .back-button:focus,
 .top-button:hover,
 .top-button:focus {
-	background: hsl(0, 0, 92%);
-	color: hsl(0, 0, 25%);
+    background-color: #4C566A;
 }
 
