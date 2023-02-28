@@ -1,24 +1,27 @@
 table.butt {
-	border-spacing: 0.0em;
+    border-collapse: collapse;
 	width: 100%;
+    border-radius: 1em;
 }
-table.butt th {
-	background: rgba(0, 0, 0, .12);
-	font-weight: bold;
-	padding: 0.750em 1.000em;
-	text-align: left;
+table.butt thead {
+	background-color: #B48EAD;
+}
+table.butt thead th {
+    text-align: center;
 	text-transform: uppercase;
 	white-space: nowrap;
+	font-weight: bold;
+}
+table.butt th {
+	padding: 0.750em 1.000em;
+	text-align: left;
 }
 table.butt td {
 	padding: 0.750em 1.000em;
 }
-table.butt tbody tr {
-	mix-blend-mode: multiply;
-}
 table.butt tbody tr:nth-child(even) {
-	background-color: rgba(0, 0, 0, .5);
+	background-color: #BF616A;
 }
 table.butt tbody tr:nth-child(odd) {
-	background-color: rgba(0, 0, 0, .2);
+	background-color: #EBCB8B;
 }
