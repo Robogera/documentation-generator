@@ -1,4 +1,4 @@
-<table class="butt">
+<div class="wrapper"><table class="butt">
     <thead>
         <tr>
             <th colspan="2">{{ printf "%s" .Title }}</th>
@@ -14,5 +14,5 @@
         <th>{{ range .Paragraphs }}<p>{{ printf "%s" . }}</p>{{ end }}</th>
     </tr>{{ end }}
     </tbody>
-</table>
+</table></div>
 
