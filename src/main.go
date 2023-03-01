@@ -23,7 +23,7 @@ func main() {
 		{"CloseParen", `\)`},
 		{"EOL", `[\n\r]{1}`},
 		{"Whitespace", `[ ]+`},
-		{"Punct", `[!\?.,;:\-'"]+`},
+		{"Punct", `[!\?.,;:\-'"—«»]+`},
 		{"Special", `[\*\\/]`},
 	})
 
@@ -90,3 +90,4 @@ func main() {
         log.Fatalf("Error writing to ouput: %s\n", err)
     }
 }
+

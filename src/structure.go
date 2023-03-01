@@ -1,8 +1,6 @@
 package main
 
 import (
-    "fmt"
-    "log"
 	"github.com/alecthomas/participle/v2/lexer"
 )
 
@@ -20,39 +18,85 @@ type Entry struct {
 	Pos lexer.Position
 
 	Image     *Image     `( @@`
+	Header    *Header    `| @@`
 	Table     *Table     `| @@`
 	Box       *Box       `| @@`
 	List      *List      `| @@`
 	Paragraph *Paragraph `| @@ ) EOL (EOL | EOF)`
 }
 
+type Header struct {
+	Level string `@("*":Special "*":Special? "*":Special?)`
+	Text  *Text  `Whitespace @@`
+}
+
+type Row struct {
+	// TODO: (maybe) make it possible to have multiple paragraphs per row
+	Paths      []*Path      `"img":Ident (Whitespace @@)`
+	Paragraphs []*Paragraph `(EOL "txt":Ident Whitespace @@)+`
+}
+
+type Table struct {
+	// TODO: add colors
+	Reference string `"!table":Command Whitespace @Ident`
+	Title     *Text  `Whitespace @@`
+	Rows      []*Row `(EOL @@)+`
+}
+
+type Image struct {
+	Reference  string       `"!img":Command Whitespace @Ident`
+	Path       *Path        `Whitespace @@`
+	Paragraphs []*Paragraph `(EOL @@)+`
+}
+
+type Path struct {
+	// Used by multiple file elements
+	Path string `@("/":Special? (Ident "/":Special)* Ident "." Ident)`
+}
+
+type List struct {
+	// TODO: add unordered lists
+	// (would require some syntax change to distinguish them)
+	Reference  string       `"!list":Command Whitespace @Ident`
+	Paragraphs []*Paragraph `(EOL @@)+`
+}
+
+type Box struct {
+	Type       string       `@( "!info":Command | "!warn":Command )`
+	Reference  string       `Whitespace @Ident`
+	Paragraphs []*Paragraph `(EOL @@)+`
+}
+
 // Stub function for union types to satisfy the ParserUnionType interface
 func (entry Entry) Union() {}
 
-func (entry Entry) Serve() ([]byte, error){
-    entry_type, err := unionType(&entry)
-    if err != nil {
-        return nil, fmt.Errorf("Serving entry: Error: %s at %s", err, entry.Pos.String())
-    }
-
-    switch entry_type {
-        case "*main.Paragraph":
-            log.Printf("Paragraph found at %s\n", entry.Pos.String())
-            return entry.Paragraph.Serve()
-        case "*main.List":
-            log.Printf("List found at %s\n", entry.Pos.String())
-            return entry.List.Serve()
-        case "*main.Image":
-            log.Printf("Image found at %s\n", entry.Pos.String())
-            return entry.Image.Serve()
-        case "*main.Table":
-            log.Printf("Table found at %s\n", entry.Pos.String())
-            return entry.Table.Serve()
-        case "*main.Box":
-            log.Printf("Box found at %s\n", entry.Pos.String())
-            return entry.Box.Serve()
-        default:
-            return nil, fmt.Errorf("Serving entry: Entry type %s at %s not defined", entry_type, entry.Pos.String())
-    }
+type Paragraph struct {
+	Element []*ParagraphElement `@@+`
 }
 
+type ParagraphElement struct {
+	Pos lexer.Position
+	// Normal text just gets lumped together into big chunks
+	// stored in "NormalText" string
+	// And the special elements like bold text or urls are stored separately
+	Link *Link `( @@`
+	Bold *Bold `| @@`
+	Text *Text `| @@ )`
+}
+
+// Stub function for union types to satisfy the ParserUnionType interface
+func (elem ParagraphElement) Union() {}
+
+type Link struct {
+	Text *Text `"[" @@ "]"`
+	// Urls can only be local references for now
+	Url string `"(" @Ident ")"`
+}
+
+type Bold struct {
+	Text *Text `"*":Special @@ "*":Special`
+}
+
+type Text struct {
+	Text string `@( Ident | RusWord | Number | Whitespace | OpenParen | CloseParen | Punct )+`
+}
