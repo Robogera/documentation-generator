@@ -43,7 +43,6 @@ func serve(data_struct any, template_string string) ([]byte, error) {
 func (entry Entry) Serve() ([]byte, error) {
 
 	entry_type, err := unionType(&entry)
-
 	if err != nil {
 		return nil, fmt.Errorf("Serving entry: Error: %s at %s", err, entry.Pos.String())
 	}
@@ -80,8 +79,9 @@ func (table Table) Serve() ([]byte, error) {
 	}, len(table.Rows))
 
 	for i, row := range table.Rows {
+
 		processed_rows[i].Paths = make([][]byte, len(row.Paths))
-		processed_rows[i].Paragraphs = make([][]byte, len(row.Paragraphs))
+
 		for j, path := range row.Paths {
 			content, err := path.Serve()
 			if err != nil {
@@ -89,6 +89,9 @@ func (table Table) Serve() ([]byte, error) {
 			}
 			processed_rows[i].Paths[j] = content
 		}
+
+		processed_rows[i].Paragraphs = make([][]byte, len(row.Paragraphs))
+
 		for j, paragraph := range row.Paragraphs {
 			content, err := paragraph.Serve()
 			if err != nil {
@@ -116,30 +119,33 @@ func (table Table) Serve() ([]byte, error) {
 		Rows:      processed_rows,
 	}
 
-	tmpl, err := template.New("table.html").ParseFiles("templates/table.html")
-	if err != nil {
-		return nil, err
-	}
-
-	buf := new(bytes.Buffer)
-
-	err = tmpl.Execute(buf, processed_data)
-	if err != nil {
-		return nil, err
-	}
-
-	result := make([]byte, buf.Len())
-
-	_, err = buf.Read(result)
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
+	return serve(processed_data, `
+    <div class="wrapper">
+        <table class="butt">
+            <thead>
+                <tr>
+                    <th colspan="2">{{ printf "%s" .Title }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th>Элемент</th>
+                <th>Функция</th>
+            </tr>
+            {{ range .Rows }}<tr>
+                <th>{{ range .Paths }}{{ printf "%s" . }}{{ end }}</th>
+                <th>{{ range .Paragraphs }}<p>{{ printf "%s" . }}</p>{{ end }}</th>
+            </tr>{{ end }}
+            </tbody>
+        </table>
+    </div>
+    `)
 }
 
 func (paragraph Paragraph) Serve() ([]byte, error) {
+
 	processed_elements := make([][]byte, len(paragraph.Element))
+
 	for i, elem := range paragraph.Element {
 		contents, err := elem.Serve()
 		if err != nil {
@@ -148,28 +154,7 @@ func (paragraph Paragraph) Serve() ([]byte, error) {
 		processed_elements[i] = contents
 	}
 
-	tmpl, err := template.New("paragraph").Parse(
-		"<p>{{ range . }}{{ printf \"%s\" . }}{{ end }}</p>",
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	buf := new(bytes.Buffer)
-
-	err = tmpl.Execute(buf, processed_elements)
-	if err != nil {
-		return nil, err
-	}
-
-	result := make([]byte, buf.Len())
-
-	_, err = buf.Read(result)
-	if err != nil {
-		return nil, err
-	}
-
-	return result, err
+	return serve(processed_elements, "<p>{{ range . }}{{ printf \"%s\" . }}{{ end }}</p>")
 }
 
 func (elem ParagraphElement) Serve() ([]byte, error) {
@@ -191,15 +176,22 @@ func (elem ParagraphElement) Serve() ([]byte, error) {
 }
 
 func (list List) Serve() ([]byte, error) {
-    paragraphs := make([][]byte, len(list.Paragraphs))
-    for i, paragraph := range list.Paragraphs {
-        contents, err := paragraph.Serve()
-        if err != nil {
-            continue
-        }
-        paragraphs[i] = contents
-    }
-    return serve(paragraphs, `<ol>{{ range . }}<li>{{ printf "%s" . }}</li>{{ end }}</ol>`)
+
+	paragraphs := make([][]byte, len(list.Paragraphs))
+
+	for i, paragraph := range list.Paragraphs {
+		contents, err := paragraph.Serve()
+		if err != nil {
+			continue
+		}
+		paragraphs[i] = contents
+	}
+
+	return serve(paragraphs, `
+    <ol>
+    {{ range . }}<li>{{ printf "%s" . }}</li>
+    {{ end }}</ol>
+    `)
 }
 
 func (image Image) Serve() ([]byte, error) {
@@ -231,7 +223,15 @@ func (image Image) Serve() ([]byte, error) {
 		Paragraphs: processed_paragraphs,
 	}
 
-	return serve(processed_data, "<figure name={{ .Reference }}>\n<img src=\"{{ printf \"%s\" .Path }}\">\n<figcaption>{{ range .Paragraphs }}{{ printf \"%s\" . }}{{ end }}</figcaption>\n</figure>")
+	return serve(processed_data, `
+    <figure name={{ .Reference }}>
+        <img src="{{ printf "%s" .Path }}"></img>
+        <figcaption>
+            {{ range .Paragraphs }}{{ printf "%s" . }}
+            {{ end }}
+        </figcaption>
+    </figure>
+    `)
 }
 
 func (path Path) Serve() ([]byte, error) {
@@ -239,6 +239,7 @@ func (path Path) Serve() ([]byte, error) {
 }
 
 func (header Header) Serve() ([]byte, error) {
+
 	processed_text, err := serve(header.Text, `{{ .Text }}`)
 	if err != nil {
 		return nil, err
@@ -254,29 +255,39 @@ func (header Header) Serve() ([]byte, error) {
 		Level: processed_level,
 		Text:  processed_text,
 	}
-	return serve(processed_data, `<h{{ printf "%d" .Level }}>{{ printf "%s" .Text }}</h{{ printf "%d" .Level }}>`)
+
+	return serve(processed_data, `
+    <h{{ printf "%d" .Level }}>{{ printf "%s" .Text }}</h{{ printf "%d" .Level }}>
+    `)
 }
 
 func (box Box) Serve() ([]byte, error) {
-    processed_paragraphs := make([][]byte, len(box.Paragraphs))
+	processed_paragraphs := make([][]byte, len(box.Paragraphs))
 
-    for i, paragraph := range box.Paragraphs {
-        contents, err := paragraph.Serve()
-        if err != nil {
-            return nil, err
-        }
-        processed_paragraphs[i] = contents
-    }
+	for i, paragraph := range box.Paragraphs {
+		contents, err := paragraph.Serve()
+		if err != nil {
+			return nil, err
+		}
+		processed_paragraphs[i] = contents
+	}
 
-    processed_data := struct{
-        Type string
-        Reference string
-        Paragraphs [][]byte
-    }{
-        Type: box.Type[1:],
-        Reference: box.Reference,
-        Paragraphs: processed_paragraphs,
-    }
+	processed_data := struct {
+		Type       string
+		Reference  string
+		Paragraphs [][]byte
+	}{
+		Type:       box.Type[1:],
+		Reference:  box.Reference,
+		Paragraphs: processed_paragraphs,
+	}
 
-    return serve(processed_data, "<div class=\"wrapper\"><div name=\"{{ .Reference }}\" class=\"{{ .Type }}\">\n{{ range .Paragraphs }}{{ printf \"%s\" . }}{{ end }}\n</div></div>")
+	return serve(processed_data, `
+    <div class="wrapper">
+        <div name="{{ .Reference }}" class="{{ .Type }}">
+            {{ range .Paragraphs }}{{ printf "%s" . }}
+            {{ end }}
+        </div>
+    </div>
+    `)
 }
