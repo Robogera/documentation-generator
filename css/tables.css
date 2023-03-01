@@ -1,16 +1,21 @@
 table.butt {
+    border: 0em;
+    border-radius: 10px;
     border-collapse: collapse;
-	width: 100%;
-    border-radius: 1em;
+    table-layout: fixed;
+    width: 90%;
+    overflow:hidden;
+    margin: auto;
 }
 table.butt thead {
-	background-color: #B48EAD;
+	background-color: var(--table-header);
 }
 table.butt thead th {
     text-align: center;
 	text-transform: uppercase;
 	white-space: nowrap;
 	font-weight: bold;
+    font-size: 1.1em;
 }
 table.butt th {
 	padding: 0.750em 1.000em;
@@ -20,8 +25,16 @@ table.butt td {
 	padding: 0.750em 1.000em;
 }
 table.butt tbody tr:nth-child(even) {
-	background-color: #BF616A;
+	background-color: var(--table-odd);
 }
 table.butt tbody tr:nth-child(odd) {
-	background-color: #EBCB8B;
+	background-color: var(--table-even);
+}
+table.butt tbody tr:first-child {
+    font-weight: bold;
+	text-transform: uppercase;
+    font-style: italic;
+}
+table.butt p {
+    padding: 0;
 }

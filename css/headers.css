@@ -5,19 +5,18 @@ h4 {
 	font-weight: bold;
 	line-height: 1.250em;
 	text-transform: uppercase;
+    padding-top: 2em;
+    padding-bottom: 1em;
 }
 h1 {
-	font-size: 1.750em;
-	margin: 0 0 0.500em 0;
+	font-size: 3em;
+    padding-top: 0;
 }
 h2 {
-	font-size: 1.500em;
-	margin: 1.875em 0 -0.625em 0;
+	font-size: 2em;
 }
 h3 {
-	font-size: 1.125em;
-	margin: 1.875em 0 0.938em 0;
+	font-size: 1.5em;
 }
 h4 {
-	margin: 1.750em 0 0.938em 0;
 }

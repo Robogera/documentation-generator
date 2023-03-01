@@ -1,29 +1,36 @@
 /* Boxes */
+.wrapper {
+    padding-bottom: 1.5em;
+    width: 100%;
+}
 .info:before,
 .warn:before {
 	font-family: 'icons';
-}
-.info:before,
-.warn:before {
-	margin: 0 0.375em 0 0;
+    font-size: 2em;
+    font-weight: bold;
+    white-space: nowrap;
 }
 .info,
 .warn {
-	font-size: 0.938em;
-	padding: 1.000em;
-	margin: 0 1.000em 1.688em 1.000em;
-    border-radius: 1em;
+	font-size: 1em;
+	margin: auto;
+    border-radius: 10px;
+    box-sizing: border-box;
+    padding: 1em;
+    width: 90%;
 }
 .info:before {
 	content: "\2139";
 }
 .info {
-	background: #88C0D0;
+	background: var(--infobox);
 }
 .warn:before {
 	content: "\26a0";
 }
 .warn {
-	background: #BF616A;
+	background: var(--warnbox);
 }
-
+.wrapper p {
+    padding-bottom: 0.5em;
+}

@@ -4,15 +4,22 @@
 	vertical-align: baseline;
 }
 html {
-	background: #4C566A;
-	color: #E5E9F0;
+	background: var(--background);
+	color: var(--foreground);
 	font-family: Arial, sans-serif;
 	font-size: calc(0.875em + .2vw);
 	line-height: 1.625em;
 	margin: 0 auto;
 	max-width: 54em;
-	padding: 4% 1.250em 5em;
 }
 body {
 	animation: fadein 1.0s;
+}
+body p {
+    padding-bottom: 1.5em;
+    text-align: justify;
+    text-justify: inter-word;
+}
+body figure {
+    padding-bottom: 1.5em;
 }

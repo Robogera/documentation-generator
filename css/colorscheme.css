@@ -1,0 +1,11 @@
+:root {
+    --background: #FFFFFD;
+    --foreground: #3D4756;
+    --infobox: #c1e5f7;
+    --warnbox: #ffa89e;
+    --button: #5e81ac;
+    --hover: #f0faff;
+    --table-odd: #ededed;
+    --table-even: #f0f0ed;
+    --table-header: #ededed;
+}
