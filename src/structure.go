@@ -32,7 +32,7 @@ type Header struct {
 
 type Row struct {
 	// TODO: (maybe) make it possible to have multiple paragraphs per row
-	Paths      []*Path      `"img":Ident (Whitespace @@)`
+	Paths      []*Path      `"img":Ident (Whitespace @@)+`
 	Paragraphs []*Paragraph `(EOL "txt":Ident Whitespace @@)+`
 }
 
