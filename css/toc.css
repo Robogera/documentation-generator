@@ -1,0 +1,9 @@
+.toc {
+    font-size: 1.5em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+.toc p {
+    padding-top: 0;
+    padding-bottom: 0;
+}
