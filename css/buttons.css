@@ -4,23 +4,26 @@
     position: fixed;
     border: 0;
     padding: 0.5em;
+    width: 4em;
     font-size: 2em;
     text-align: center;
     align-items: center;
     line-height: 1em;
     color: var(--background);
-    border-top-right-radius: 1rem;
-    border-top-left-radius: 1rem;
-    background-color: var(--button);
+    background-color: var(--accent);
     transition: all 1.5s ease;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    transform-origin: bottom left;
+    transform: rotate(-90deg);
 }
 .top-button {
-	right: 2em;
-	bottom: 0px;
+    left: 100%;
+	bottom: calc(10px * 2 + 5em);
 }
 .back-button {
-	right: 10px;
-	bottom: 0px;
+    left: 100%;
+	bottom: 10px;
 }
 .back-button:hover,
 .top-button:hover {

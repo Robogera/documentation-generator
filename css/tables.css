@@ -1,4 +1,4 @@
-table.butt {
+.buttons {
     border: 0em;
     border-radius: 10px;
     border-collapse: collapse;
@@ -7,34 +7,55 @@ table.butt {
     overflow:hidden;
     margin: auto;
 }
-table.butt thead {
-	background-color: var(--table-header);
-}
-table.butt thead th {
-    text-align: center;
+.buttons thead {
 	text-transform: uppercase;
-	white-space: nowrap;
 	font-weight: bold;
-    font-size: 1.1em;
+    font-size: 1.2em;
 }
-table.butt th {
-	padding: 0.750em 1.000em;
-	text-align: left;
+.buttons thead tr:first-child th {
+    text-align: center;
+	white-space: nowrap;
 }
-table.butt td {
-	padding: 0.750em 1.000em;
-}
-table.butt tbody tr:nth-child(even) {
-	background-color: var(--table-odd);
-}
-table.butt tbody tr:nth-child(odd) {
-	background-color: var(--table-even);
-}
-table.butt tbody tr:first-child {
-    font-weight: bold;
-	text-transform: uppercase;
+.buttons thead tr:last-child {
     font-style: italic;
 }
-table.butt p {
+.buttons th {
+	padding: 0.750em 1.000em;
+    vertical-align: top;
+	text-align: left;
+}
+.buttons td {
+	padding: 0.750em 1.000em;
+}
+.buttons thead {
+	background-color: var(--table-header);
+}
+.buttons tr:nth-child(even) {
+	background-color: var(--table-odd);
+}
+.buttons tr:nth-child(odd) {
+	background-color: var(--table-even);
+}
+.buttons p {
     padding: 0;
 }
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: auto;
+    grid-gap: 5px;
+    width: 100%;
+}
+
+.grid-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.wide-element {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 1;
+}
+

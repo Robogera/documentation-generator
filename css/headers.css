@@ -10,7 +10,8 @@ h4 {
 }
 h1 {
 	font-size: 3em;
-    padding-top: 0;
+    padding-bottom: 0em;
+    padding-top: 1em;
 }
 h2 {
 	font-size: 2em;
