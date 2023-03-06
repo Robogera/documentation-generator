@@ -38,13 +38,13 @@ type Row struct {
 
 type Table struct {
 	// TODO: add colors
-	Reference string `"!table":Command Whitespace @Ident`
+	ID string `"!table":Command Whitespace @Ident`
 	Title     *Text  `Whitespace @@`
 	Rows      []*Row `(EOL @@)+`
 }
 
 type Image struct {
-	Reference  string       `"!img":Command Whitespace @Ident`
+	ID  string       `"!img":Command Whitespace @Ident`
 	Path       *Path        `Whitespace @@`
 	Paragraphs []*Paragraph `(EOL @@)+`
 }
@@ -57,13 +57,13 @@ type Path struct {
 type List struct {
 	// TODO: add unordered lists
 	// (would require some syntax change to distinguish them)
-	Reference  string       `"!list":Command Whitespace @Ident`
+	ID  string       `"!list":Command Whitespace @Ident`
 	Paragraphs []*Paragraph `(EOL @@)+`
 }
 
 type Box struct {
 	Type       string       `@( "!info":Command | "!warn":Command )`
-	Reference  string       `Whitespace @Ident`
+	ID  string       `Whitespace @Ident`
 	Paragraphs []*Paragraph `(EOL @@)+`
 }
 
