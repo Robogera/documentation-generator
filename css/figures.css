@@ -16,4 +16,3 @@ figure figcaption.numbered {
 figure figcaption.numbered:before {
 	content: 'Рис. ' counter(figures) ' - ';
 }
-

@@ -1,9 +1,34 @@
 .toc {
-    font-size: 1.5em;
-    text-transform: uppercase;
-    color: var(--accent);
+  font-size: 1.5em;
+  text-transform: uppercase;
+  color: var(--foreground);
 }
-.toc p {
-    padding-top: 0;
-    padding-bottom: 0;
+
+.toc a {
+  text-decoration: none;
+  color: var(--accent);
+}
+
+.level1,
+.level2,
+.level3,
+.level4 {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.level1 {
+  padding-left: 0;
+}
+
+.level2 {
+  padding-left: 1em;
+}
+
+.level3 {
+  padding-left: 2em;
+}
+
+.level4 {
+  padding-left: 3em;
 }

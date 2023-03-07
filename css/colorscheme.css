@@ -1,11 +1,10 @@
 :root {
-    --background: #FFFFFD;
-    --foreground: #3D4756;
-    --infobox: #c1e5f7;
-    --warnbox: #fcd6d2;
-    --accent: #5e81ac;
-    --table-odd: #e0e0e0;
-    --table-even: #ededed;
-    --table-header: #ededed;
+  --background: #FFFFFD;
+  --foreground: #3D4756;
+  --infobox: #c1e5f7;
+  --warnbox: #fcd6d2;
+  --accent: #5e81ac;
+  --table-odd: #e0e0e0;
+  --table-even: #ededed;
+  --table-header: #ededed;
 }
-
