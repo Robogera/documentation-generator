@@ -205,7 +205,7 @@ func (elem ParagraphElement) Serve(links *LinkStorage) ([]byte, error) {
 	switch elem_type {
 	case "*main.Link":
 		links.push(elem.Link.Url)
-		return serve(elem.Link, `<a href="{{ .Url }}">{{ .Text.Text }}</a>`)
+		return serve(elem.Link, `<a href="#{{ .Url }}">{{ .Text.Text }}</a>`)
 	case "*main.Bold":
 		return serve(elem.Bold, `<b>{{ .Text.Text }}</b>`)
 	case "*main.Text":
@@ -296,10 +296,10 @@ func (header Header) Serve(headers *HeaderStorage, ids *IdStorage) ([]byte, erro
 	}
 
 	headers.push(len(header.Level), processed_text, processed_id)
-    err = ids.push(processed_id)
-    if err != nil {
-        return nil, err
-    }
+	err = ids.push(processed_id)
+	if err != nil {
+		return nil, err
+	}
 
 	// <h1> is already reserved by a page title so we construct h2 and upwards
 	processed_level := 1 + len(header.Level)
@@ -307,11 +307,11 @@ func (header Header) Serve(headers *HeaderStorage, ids *IdStorage) ([]byte, erro
 	processed_data := struct {
 		Level int
 		Text  []byte
-        ID string
+		ID    string
 	}{
 		Level: processed_level,
 		Text:  processed_text,
-        ID: processed_id,
+		ID:    processed_id,
 	}
 
 	return serve(processed_data, `

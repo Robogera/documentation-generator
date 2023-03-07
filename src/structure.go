@@ -40,7 +40,7 @@ type Row struct {
 type Table struct {
 	// TODO: add colors
 	Title *Text  `"!table":Command Whitespace @@`
-	ID    string `(Whitespace "#":Special @Ident)?`
+	ID    string `("#":Special @Ident)?`
 	Rows  []*Row `(EOL @@)+`
 }
 
