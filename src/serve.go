@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"github.com/google/uuid"
 	"log"
 	"text/template"
 )
@@ -74,7 +75,7 @@ func (entry Entry) Serve(headers *HeaderStorage, images *ImageStorage, ids *IdSt
 		return entry.Paragraph.Serve(links)
 	case "*main.Header":
 		log.Printf("Header found at %s\n", entry.Pos.String())
-		return entry.Header.Serve(headers)
+		return entry.Header.Serve(headers, ids)
 	case "*main.List":
 		log.Printf("List found at %s\n", entry.Pos.String())
 		return entry.List.Serve(links)
@@ -228,7 +229,7 @@ func (list List) Serve(links *LinkStorage) ([]byte, error) {
 
 	return serve(paragraphs, `
     <ol>
-    {{ range . }}<li>{{ printf "%s" . }}</li>
+    {{ range . }}<li class="listelement">{{ printf "%s" . }}</li>
     {{ end }}</ol>
     `)
 }
@@ -282,14 +283,23 @@ func (path Path) Serve(images *ImageStorage) ([]byte, error) {
 	return serve(path.Path, "img/{{ . }}")
 }
 
-func (header Header) Serve(headers *HeaderStorage) ([]byte, error) {
+func (header Header) Serve(headers *HeaderStorage, ids *IdStorage) ([]byte, error) {
 
 	processed_text, err := serve(header.Text, `{{ .Text }}`)
 	if err != nil {
 		return nil, err
 	}
+	processed_id := header.ID
 
-    headers.push(len(header.Level), processed_text)
+	if processed_id == "" {
+		processed_id = uuid.New().String()
+	}
+
+	headers.push(len(header.Level), processed_text, processed_id)
+    err = ids.push(processed_id)
+    if err != nil {
+        return nil, err
+    }
 
 	// <h1> is already reserved by a page title so we construct h2 and upwards
 	processed_level := 1 + len(header.Level)
@@ -297,13 +307,15 @@ func (header Header) Serve(headers *HeaderStorage) ([]byte, error) {
 	processed_data := struct {
 		Level int
 		Text  []byte
+        ID string
 	}{
 		Level: processed_level,
 		Text:  processed_text,
+        ID: processed_id,
 	}
 
 	return serve(processed_data, `
-    <h{{ printf "%d" .Level }}>{{ printf "%s" .Text }}</h{{ printf "%d" .Level }}>
+    <h{{ printf "%d" .Level }} id="{{ .ID }}">{{ printf "%s" .Text }}</h{{ printf "%d" .Level }}>
     `)
 }
 
@@ -320,11 +332,11 @@ func (box Box) Serve(links *LinkStorage) ([]byte, error) {
 
 	processed_data := struct {
 		Type       string
-		ID  string
+		ID         string
 		Paragraphs [][]byte
 	}{
 		Type:       box.Type[1:],
-		ID:  box.ID,
+		ID:         box.ID,
 		Paragraphs: processed_paragraphs,
 	}
 

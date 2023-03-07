@@ -67,9 +67,10 @@ type HeaderStorage []*HeaderInfo
 type HeaderInfo struct {
 	Text  []byte
 	Level int
+	ID    string
 }
 
-func (storage *HeaderStorage) push(level int, header []byte) error {
+func (storage *HeaderStorage) push(level int, header []byte, id string) error {
 
 	if level < 1 {
 		return fmt.Errorf("Invalid level '%d', levels <1 not allowed", level)
@@ -78,6 +79,7 @@ func (storage *HeaderStorage) push(level int, header []byte) error {
 	header_info := &HeaderInfo{
 		Text:  header,
 		Level: level,
+        ID: id,
 	}
 
 	*storage = append(*storage, header_info)

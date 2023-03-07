@@ -13,7 +13,6 @@ func main() {
 
 	document_lexer := lexer.MustSimple([]lexer.SimpleRule{
 		{"Command", `![a-z]+`},
-		{"Color", `#[0-9a-fA-F]{6}`},
 		{"Number", `[0-9]+`},
 		{"OpenSquare", `\[`},
 		{"CloseSquare", `\]`},
@@ -24,7 +23,7 @@ func main() {
 		{"EOL", `[\n\r]{1}`},
 		{"Whitespace", `[ ]+`},
 		{"Punct", `[!\?.,;:\-'"—«»]+`},
-		{"Special", `[\*\\/]`},
+		{"Special", `[\*\\/#]`},
 	})
 
 	document_parser := participle.MustBuild[Document](
@@ -41,15 +40,15 @@ func main() {
 		log.Fatalf("Parser: Error: File could not be parsed: %s\n", err)
 	}
 
-    headers := new(HeaderStorage)
-    images := newImageStorage()
-    ids := newIdStorage()
-    links := newLinkStorage()
+	headers := new(HeaderStorage)
+	images := newImageStorage()
+	ids := newIdStorage()
+	links := newLinkStorage()
 
-    processed_body, err := document.Serve(headers, images, ids, links)
-    if err != nil {
-        log.Fatalf("Serving body failed with error %s\n", err)
-    }
+	processed_body, err := document.Serve(headers, images, ids, links)
+	if err != nil {
+		log.Fatalf("Serving body failed with error %s\n", err)
+	}
 
 	stylesheets, err := os.ReadDir("./css")
 
@@ -64,20 +63,20 @@ func main() {
 		processed_css[i] = contents
 	}
 
-    processed_toc, err := headers.generateTOC()
-    if err != nil {
-        log.Fatalf("Error generating TOC: %s\n", err)
-    }
+	processed_toc, err := headers.generateTOC()
+	if err != nil {
+		log.Fatalf("Error generating TOC: %s\n", err)
+	}
 
-    log.Printf("%s\n", processed_toc)
+	log.Printf("%s\n", processed_toc)
 
 	processed_data := struct {
 		Style [][]byte
-        TOC []byte
+		TOC   []byte
 		Body  []byte
 	}{
 		Style: processed_css,
-        TOC: processed_toc,
+		TOC:   processed_toc,
 		Body:  processed_body,
 	}
 

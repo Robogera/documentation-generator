@@ -28,6 +28,7 @@ type Entry struct {
 type Header struct {
 	Level string `@("*":Special "*":Special? "*":Special?)`
 	Text  *Text  `Whitespace @@`
+	ID    string `("#":Special @Ident)?`
 }
 
 type Row struct {
@@ -38,14 +39,14 @@ type Row struct {
 
 type Table struct {
 	// TODO: add colors
-	ID string `"!table":Command Whitespace @Ident`
-	Title     *Text  `Whitespace @@`
-	Rows      []*Row `(EOL @@)+`
+	Title *Text  `"!table":Command Whitespace @@`
+	ID    string `(Whitespace "#":Special @Ident)?`
+	Rows  []*Row `(EOL @@)+`
 }
 
 type Image struct {
-	ID  string       `"!img":Command Whitespace @Ident`
-	Path       *Path        `Whitespace @@`
+	Path       *Path        `"!img":Command Whitespace @@`
+	ID         string       `(Whitespace "#":Special @Ident)?`
 	Paragraphs []*Paragraph `(EOL @@)+`
 }
 
@@ -57,13 +58,13 @@ type Path struct {
 type List struct {
 	// TODO: add unordered lists
 	// (would require some syntax change to distinguish them)
-	ID  string       `"!list":Command Whitespace @Ident`
+	ID         string       `"!list":Command (Whitespace "#":Special @Ident)?`
 	Paragraphs []*Paragraph `(EOL @@)+`
 }
 
 type Box struct {
 	Type       string       `@( "!info":Command | "!warn":Command )`
-	ID  string       `Whitespace @Ident`
+	ID         string       `(Whitespace "#":Special @Ident)?`
 	Paragraphs []*Paragraph `(EOL @@)+`
 }
 
