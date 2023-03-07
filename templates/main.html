@@ -2,25 +2,23 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Synapse media control system user manual">
-    <meta name="author" content="g.cherdakly@int-sys.ru">
-    <title>Document</title>
-	<style>
-    {{ range .Style }}
-    {{ printf "%s" . }}
-    {{ end }}
-	</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Synapse media control system user manual">
+  <meta name="author" content="g.cherdakly@int-sys.ru">
+  <title>Document</title>
+  <style>
+  {{ range .Style }}{{ printf "%s" . }}{{ end }}
+  </style>
 </head>
 
 <body>
-    <a class="top-button" href="#top">наверх</a>
-    <a class="back-button" href="javascript:history.back()">назад</a>
-    <h1><span style="color: var(--accent); font-size: 1.5em;">Synapse</span> – руководство пользователя</h1>
-    <h2>Оглавление:</h2>
-    {{ printf "%s" .TOC }}
-    {{ printf "%s" .Body }}
+  <a class="top-button" href="#top">наверх</a>
+  <a class="back-button" href="javascript:history.back()">назад</a>
+  <h1><span style="color: var(--accent); font-size: 1.5em;">Synapse</span> – руководство пользователя</h1>
+  <h2>Оглавление:</h2>
+  {{ printf "%s" .TOC }}
+  {{ printf "%s" .Body }}
 </body>
 
 </html>
