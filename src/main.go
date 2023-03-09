@@ -22,8 +22,9 @@ func main() {
 		{"CloseParen", `\)`},
 		{"EOL", `[\n\r]{1}`},
 		{"Whitespace", `[ ]+`},
-		{"Punct", `[!\?.,;:\-+'"—«»]+`},
-		{"Special", `[\*\\/#]`},
+		{"Punct", `[!\?.,;:\-+%'"—«»]+`},
+		{"Special", `[\*\\/#<>&=]`},
+		{"Code", "`"},
 	})
 
 	document_parser := participle.MustBuild[Document](

@@ -82,6 +82,7 @@ type ParagraphElement struct {
 	// And the special elements like bold text or urls are stored separately
 	Link *Link `( @@`
 	Bold *Bold `| @@`
+	Code *Code `| @@`
 	Text *Text `| @@ )`
 }
 
@@ -100,4 +101,8 @@ type Bold struct {
 
 type Text struct {
 	Text string `@( Ident | RusWord | Number | Whitespace | OpenParen | CloseParen | Punct )+`
+}
+
+type Code struct {
+	Text string `Code @( Ident | RusWord | Number | Whitespace | OpenParen | CloseParen | Punct | Special )+ Code`
 }

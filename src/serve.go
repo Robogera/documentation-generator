@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"html"
 	"log"
 	"text/template"
 )
@@ -121,6 +122,8 @@ func (elem ParagraphElement) Serve(links *LinkStorage) ([]byte, error) {
 		return serve(elem.Bold, `<b>{{ .Text.Text }}</b>`)
 	case "*main.Text":
 		return serve(elem.Text, `{{ .Text }}`)
+	case "*main.Code":
+		return serve(html.EscapeString(elem.Code.Text), `<code class="inline-code">{{ . }}</code>`)
 	default:
 		return nil, fmt.Errorf("Serving paragraph element: Element type %s at %s not defined", elem_type, elem.Pos.String())
 	}
@@ -138,10 +141,7 @@ func (list List) Serve(links *LinkStorage) ([]byte, error) {
 		paragraphs[i] = contents
 	}
 
-	return serve(paragraphs, `
-    <ol>
-    {{ range . }}<li class="listelement">{{ printf "%s" . }}</li>
-    {{ end }}</ol>
+	return serve(paragraphs, `<ol>{{ range . }}<li class="listelement">{{ printf "%s" . }}</li>{{ end }}</ol>
     `)
 }
 
@@ -180,8 +180,8 @@ func (image Image) Serve(links *LinkStorage, images *ImageStorage, ids *IdStorag
 
 	return serve(processed_data, `
     <figure name={{ printf "%s" .ID }}>
-        <img class="grid-image" src="{{ printf "%s" .Path }}"></img>
-        <figcaption>
+        <div class="image-wrapper"><img class="big-image" src="{{ printf "%s" .Path }}"></img></div>
+        <figcaption class="image-caption">
             {{ range .Paragraphs }}{{ printf "%s" . }}
             {{ end }}
         </figcaption>
