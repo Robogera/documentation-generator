@@ -68,8 +68,6 @@ func main() {
 		log.Fatalf("Error generating TOC: %s\n", err)
 	}
 
-	log.Printf("%s\n", processed_toc)
-
 	processed_data := struct {
 		Style [][]byte
 		TOC   []byte

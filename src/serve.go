@@ -205,23 +205,28 @@ func (header Header) Serve(headers *HeaderStorage, ids *IdStorage) ([]byte, erro
 	if err != nil {
 		return nil, err
 	}
-	headers.push(len(header.Level), processed_text, string(id))
+	number, err := headers.push(len(header.Level), processed_text, string(id))
+	if err != nil {
+		return nil, err
+	}
 
 	// <h1> is already reserved by a page title so we construct h2 and upwards
 	processed_level := 1 + len(header.Level)
 
 	processed_data := struct {
-		Level int
-		Text  []byte
-		ID    []byte
+		Number []int
+		Level  int
+		Text   []byte
+		ID     []byte
 	}{
-		Level: processed_level,
-		Text:  processed_text,
-		ID:    id,
+		Level:  processed_level,
+		Text:   processed_text,
+		ID:     id,
+		Number: number,
 	}
 
 	return serve(processed_data, `
-    <h{{ printf "%d" .Level }} id="{{ printf "%s" .ID }}">{{ printf "%s" .Text }}</h{{ printf "%d" .Level }}>
+    <h{{ printf "%d" .Level }} id="{{ printf "%s" .ID }}">{{ range .Number }}{{ printf "%d" .}}.{{ end }} {{ printf "%s" .Text }}</h{{ printf "%d" .Level }}>
     `)
 }
 

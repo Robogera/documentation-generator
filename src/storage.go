@@ -67,31 +67,56 @@ func (storage *ImageStorage) push(new_link string) {
 	storage.Storage[new_link] = struct{}{}
 }
 
-type HeaderStorage []*HeaderInfo
-
-type HeaderInfo struct {
-	Text  []byte
-	Level int
-	ID    string
+type HeaderStorage struct {
+	Headers          []*HeaderInfo
+	LastHeaderNumber []int
 }
 
-func (storage *HeaderStorage) push(level int, header []byte, id string) error {
+type HeaderInfo struct {
+	Text   []byte
+	Level  int
+	Number []int
+	ID     string
+}
+
+func (storage *HeaderStorage) push(level int, header []byte, id string) ([]int, error) {
 
 	if level < 1 {
-		return fmt.Errorf("Invalid level '%d', levels <1 not allowed", level)
+		return nil, fmt.Errorf("Invalid level '%d', levels <1 not allowed", level)
 	}
+
+	if level <= len(storage.LastHeaderNumber) {
+		storage.LastHeaderNumber[level-1] += 1
+	} else {
+		for i := len(storage.LastHeaderNumber); i <= level; i++ {
+			storage.LastHeaderNumber = append(storage.LastHeaderNumber, 1)
+		}
+	}
+	storage.LastHeaderNumber = storage.LastHeaderNumber[:level]
+
+	new_number := append([]int(nil), storage.LastHeaderNumber...)
 
 	header_info := &HeaderInfo{
-		Text:  header,
-		Level: level,
-		ID:    id,
+		Text:   header,
+		Level:  level,
+		Number: new_number,
+		ID:     id,
 	}
 
-	*storage = append(*storage, header_info)
+	storage.Headers = append(storage.Headers, header_info)
 
-	return nil
+	return new_number, nil
 }
 
 func checkAllLinksValid(links *LinkStorage, ids *IdStorage) error {
 	return nil
+}
+
+func (storage *HeaderStorage) generateTOC() ([]byte, error) {
+
+	return serve(storage.Headers,
+		`<div class="toc">
+		{{ range . }}<p class="level{{ printf "%d" .Level }}">{{ range .Number }}{{ printf "%d" . }}.{{ end }} <a href="#{{ .ID }}">{{ printf "%s" .Text }}</a></p>
+		{{ end }}</div>
+	`)
 }
