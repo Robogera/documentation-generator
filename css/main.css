@@ -27,3 +27,31 @@ body p {
 body figure {
 	padding-bottom: 1.5em;
 }
+
+.image-caption p {
+	margin: auto;
+	width: 80%;
+	text-align: center;
+	font-size: 0.8em;
+	font-style: italics;
+}
+
+.inline-code {
+	font-family: monospace;
+	white-space: nowrap;
+	color: var(--accent);
+	background: var(--table-odd)
+}
+
+.image-wrapper {
+	margin: auto;
+	padding: auto;
+	width: 90%;
+}
+
+.big-image {
+	width: 100%;
+	height: 100%;
+	margin: auto;
+	object-fit: contain;
+}

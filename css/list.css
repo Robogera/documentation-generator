@@ -1,6 +1,7 @@
 .listelement p {
   padding-top: 0em;
   padding-bottom: 0em;
+  text-align: left;
 }
 
 ol {
