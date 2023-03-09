@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 )
 
 // Storing element IDs in the hash map to make sure they are unique
@@ -15,17 +16,21 @@ func newIdStorage() *IdStorage {
 	}
 }
 
-func (storage *IdStorage) push(new_id string) error {
+func (storage *IdStorage) push(new_id string) ([]byte, error) {
+
+	if len(new_id) == 0 {
+		new_id = uuid.New().String()
+	}
 
 	_, already_exists := storage.Storage[new_id]
 
 	if already_exists {
-		return fmt.Errorf("ID '%s' declared twice!", new_id)
+		return nil, fmt.Errorf("ID '%s' declared twice!", new_id)
 	}
 
 	storage.Storage[new_id] = struct{}{}
 
-	return nil
+	return []byte(new_id), nil
 }
 
 // Storing local references to make sure we don't reference the IDs we don't have
@@ -79,7 +84,7 @@ func (storage *HeaderStorage) push(level int, header []byte, id string) error {
 	header_info := &HeaderInfo{
 		Text:  header,
 		Level: level,
-        ID: id,
+		ID:    id,
 	}
 
 	*storage = append(*storage, header_info)

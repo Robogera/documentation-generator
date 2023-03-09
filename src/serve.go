@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/google/uuid"
 	"log"
 	"text/template"
 )
@@ -87,98 +86,10 @@ func (entry Entry) Serve(headers *HeaderStorage, images *ImageStorage, ids *IdSt
 		return entry.Table.Serve(images, ids, links)
 	case "*main.Box":
 		log.Printf("Box found at %s\n", entry.Pos.String())
-		return entry.Box.Serve(links)
+		return entry.Box.Serve(ids, links)
 	default:
 		return nil, fmt.Errorf("Serving entry: Entry type %s at %s not defined", entry_type, entry.Pos.String())
 	}
-}
-
-func (table Table) Serve(images *ImageStorage, ids *IdStorage, links *LinkStorage) ([]byte, error) {
-
-	err := ids.push(table.ID)
-	if err != nil {
-		return nil, fmt.Errorf("Table serving error: %s", err)
-	}
-
-	processed_rows := make([]struct {
-		Paths      [][]byte
-		Paragraphs [][]byte
-	}, len(table.Rows))
-
-	for i, row := range table.Rows {
-
-		processed_rows[i].Paths = make([][]byte, len(row.Paths))
-
-		for j, path := range row.Paths {
-			content, err := path.Serve(images)
-			if err != nil {
-				return nil, err
-			}
-			// TODO: check path validity
-			processed_rows[i].Paths[j] = content
-		}
-
-		processed_rows[i].Paragraphs = make([][]byte, len(row.Paragraphs))
-
-		for j, paragraph := range row.Paragraphs {
-			content, err := paragraph.Serve(links)
-			if err != nil {
-				return nil, err
-			}
-			processed_rows[i].Paragraphs[j] = content
-		}
-	}
-
-	processed_title, err := serve(table.Title, `{{ .Text }}`)
-	if err != nil {
-		return nil, err
-	}
-
-	processed_data := struct {
-		Title []byte
-		ID    string
-		Rows  []struct {
-			Paths      [][]byte
-			Paragraphs [][]byte
-		}
-	}{
-		Title: processed_title,
-		ID:    table.ID,
-		Rows:  processed_rows,
-	}
-
-	return serve(processed_data, `
-    <div class="wrapper">
-        <table class="buttons" id="{{ .ID }}">
-             <colgroup>
-                <col style="width:30%;">
-                <col style="width:70%;">
-            </colgroup>
-            <thead>
-                <tr>
-                    <th colspan="2">{{ printf "%s" .Title }}</th>
-                </tr>
-                <tr>
-                    <th>Элемент</th>
-                    <th>Функция</th>
-                </tr>
-            </thead>
-            <tbody>
-            {{ range .Rows }}<tr>
-                <th>
-                    <div class="grid">{{ range .Paths }}
-                        <div {{ if false }}class="wide-element"{{ end }}>
-                            <img src="{{ printf "%s" . }}" class="grid-image">
-                        </div>
-                    {{ end }}
-                    </div>
-                </th>
-                <th>{{ range .Paragraphs }}<p>{{ printf "%s" . }}</p>{{ end }}</th>
-            </tr>{{ end }}
-            </tbody>
-        </table>
-    </div>
-    `)
 }
 
 func (paragraph Paragraph) Serve(links *LinkStorage) ([]byte, error) {
@@ -236,7 +147,7 @@ func (list List) Serve(links *LinkStorage) ([]byte, error) {
 
 func (image Image) Serve(links *LinkStorage, images *ImageStorage, ids *IdStorage) ([]byte, error) {
 
-	err := ids.push(image.ID)
+	id, err := ids.push(image.ID)
 	if err != nil {
 		return nil, fmt.Errorf("Serving image error: %s", err)
 	}
@@ -258,17 +169,17 @@ func (image Image) Serve(links *LinkStorage, images *ImageStorage, ids *IdStorag
 	}
 
 	processed_data := struct {
-		ID         string
+		ID         []byte
 		Path       []byte
 		Paragraphs [][]byte
 	}{
-		ID:         image.ID,
+		ID:         id,
 		Path:       processed_path,
 		Paragraphs: processed_paragraphs,
 	}
 
 	return serve(processed_data, `
-    <figure name={{ .ID }}>
+    <figure name={{ printf "%s" .ID }}>
         <img class="grid-image" src="{{ printf "%s" .Path }}"></img>
         <figcaption>
             {{ range .Paragraphs }}{{ printf "%s" . }}
@@ -289,17 +200,12 @@ func (header Header) Serve(headers *HeaderStorage, ids *IdStorage) ([]byte, erro
 	if err != nil {
 		return nil, err
 	}
-	processed_id := header.ID
 
-	if processed_id == "" {
-		processed_id = uuid.New().String()
-	}
-
-	headers.push(len(header.Level), processed_text, processed_id)
-	err = ids.push(processed_id)
+	id, err := ids.push(header.ID)
 	if err != nil {
 		return nil, err
 	}
+	headers.push(len(header.Level), processed_text, string(id))
 
 	// <h1> is already reserved by a page title so we construct h2 and upwards
 	processed_level := 1 + len(header.Level)
@@ -307,20 +213,25 @@ func (header Header) Serve(headers *HeaderStorage, ids *IdStorage) ([]byte, erro
 	processed_data := struct {
 		Level int
 		Text  []byte
-		ID    string
+		ID    []byte
 	}{
 		Level: processed_level,
 		Text:  processed_text,
-		ID:    processed_id,
+		ID:    id,
 	}
 
 	return serve(processed_data, `
-    <h{{ printf "%d" .Level }} id="{{ .ID }}">{{ printf "%s" .Text }}</h{{ printf "%d" .Level }}>
+    <h{{ printf "%d" .Level }} id="{{ printf "%s" .ID }}">{{ printf "%s" .Text }}</h{{ printf "%d" .Level }}>
     `)
 }
 
-func (box Box) Serve(links *LinkStorage) ([]byte, error) {
+func (box Box) Serve(ids *IdStorage, links *LinkStorage) ([]byte, error) {
 	processed_paragraphs := make([][]byte, len(box.Paragraphs))
+
+	id, err := ids.push(box.ID)
+	if err != nil {
+		return nil, err
+	}
 
 	for i, paragraph := range box.Paragraphs {
 		contents, err := paragraph.Serve(links)
@@ -332,17 +243,17 @@ func (box Box) Serve(links *LinkStorage) ([]byte, error) {
 
 	processed_data := struct {
 		Type       string
-		ID         string
+		ID         []byte
 		Paragraphs [][]byte
 	}{
 		Type:       box.Type[1:],
-		ID:         box.ID,
+		ID:         id,
 		Paragraphs: processed_paragraphs,
 	}
 
 	return serve(processed_data, `
     <div class="wrapper">
-        <div class="{{ .Type }}" id="{{ .ID }}">
+        <div class="{{ .Type }}" id="{{ printf "%s" .ID }}">
             {{ range .Paragraphs }}{{ printf "%s" . }}
             {{ end }}
         </div>
