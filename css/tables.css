@@ -9,9 +9,10 @@
 }
 
 .buttons thead {
+	font-family: Arial, sans-serif;
 	text-transform: uppercase;
 	font-weight: bold;
-	font-size: 1.2em;
+	font-size: 1em;
 }
 
 .buttons thead tr:first-child th {

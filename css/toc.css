@@ -1,7 +1,25 @@
 .toc {
-  font-size: 1.5em;
-  text-transform: uppercase;
+  width: 60%;
+  text-align: left;
+  margin-right: auto;
+  border-radius: 10px;
+  box-sizing: border-box;
+  padding: 2em;
+  padding-top: 1.5em;
+  padding-bottom: 1.5em;
+  font-size: 1.2em;
+  line-height: 1em;
   color: var(--foreground);
+  background-color: var(--table-even);
+}
+
+.toc:before {
+  font-family: Arial, sans-serif;
+  font-size: 1.5em;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 0.5em;
+  content: "Оглавление:";
 }
 
 .toc a {
@@ -15,6 +33,10 @@
 .level4 {
   padding-top: 0;
   padding-bottom: 0;
+}
+
+.level1:first-child {
+  padding-top: 0.5em;
 }
 
 .level1 {
