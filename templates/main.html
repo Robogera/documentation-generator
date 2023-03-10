@@ -8,7 +8,7 @@
   <meta name="author" content="g.cherdakly@int-sys.ru">
   <title>Document</title>
   <style>
-  {{ range .Style }}{{ printf "%s" . }}
+  {{ range .Styles }}{{ printf "%s" . }}
   {{ end }}
   </style>
 </head>
@@ -16,10 +16,13 @@
 <body>
   <a class="top-button" href="#top">наверх</a>
   <a class="back-button" href="javascript:history.back()">назад</a>
-  <h1><span style="color: var(--accent); font-size: 1.5em;">Synapse</span> – руководство пользователя</h1>
-  <h2>Оглавление:</h2>
+  <h1><p class="tophead">Synapse</p><p class="bottomhead">руководство пользователя</p></h1>
   {{ printf "%s" .TOC }}
   {{ printf "%s" .Body }}
-</body>
-
+  <div style="user-select: none;" id="scrl"></div>
+  <script>
+  {{ range .Scripts }}{{ printf "%s" . }}
+  {{ end }}
+  </script>
+  </body>
 </html>
