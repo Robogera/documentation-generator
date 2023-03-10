@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/alecthomas/participle/v2"
 	"github.com/alecthomas/participle/v2/lexer"
+	"github.com/yosssi/gohtml"
 	"log"
 	"os"
 	"path/filepath"
@@ -90,7 +91,7 @@ func main() {
 	}
 	defer dest.Close()
 
-	err = tmpl.Execute(dest, processed_data)
+	err = tmpl.Execute(gohtml.NewWriter(dest), processed_data)
 	if err != nil {
 		log.Fatalf("Error writing to ouput: %s\n", err)
 	}
