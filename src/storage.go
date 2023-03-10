@@ -120,5 +120,5 @@ func checkAllLinksValid(links *LinkStorage, ids *IdStorage) error {
 
 func (storage *HeaderStorage) generateTOC() ([]byte, error) {
 
-	return serve(storage.Headers, "<div class=\"toc\">{{ range . }}<p class=\"level{{ printf \"%d\" .Level }}\">{{ range .Number }}{{ printf \"%d\" . }}.{{ end }} <a href=\"#{{ .ID }}\">{{ printf \"%s\" .Text }}</a></p>{{ end }}</div>")
+	return serve(storage.Headers, "<div class=\"wrapper\"><div class=\"toc\">{{ range . }}<p class=\"level{{ printf \"%d\" .Level }}\">{{ range .Number }}{{ printf \"%d\" . }}.{{ end }} <a href=\"#{{ .ID }}\">{{ printf \"%s\" .Text }}</a></p>{{ end }}</div></div>")
 }

@@ -80,7 +80,12 @@ func main() {
 		log.Fatalf("Opening css folder error: %s\n", err)
 	}
 
-	processed_html, err := newProcessedHtml(len(stylesheets))
+	scripts, err := os.ReadDir(filepath.Join(".", "js"))
+	if err != nil {
+		log.Fatalf("Opening js folder error: %s\n", err)
+	}
+
+	processed_html, err := newProcessedHtml(len(stylesheets), len(scripts))
 	if err != nil {
 		log.Fatalf("Error: %s\n", err)
 	}
@@ -96,7 +101,16 @@ func main() {
 			log.Printf("Error: %s. Stylesheet %s invalid. Skipping...\n", err, stylesheet.Name())
 			continue
 		}
-		processed_html.Style[i] = contents
+		processed_html.Styles[i] = contents
+	}
+
+	for i, script := range scripts {
+		contents, err := os.ReadFile(filepath.Join("js", script.Name()))
+		if err != nil {
+			log.Printf("Error: %s. Stylesheet %s invalid. Skipping...\n", err, script.Name())
+			continue
+		}
+		processed_html.Scripts[i] = contents
 	}
 
 	processed_html.TOC, err = headers.generateTOC()
@@ -137,20 +151,21 @@ func main() {
 			continue
 		}
 	}
-
 }
 
 type processedHtml struct {
-	Style [][]byte
-	TOC   []byte
-	Body  []byte
+	Scripts [][]byte
+	Styles  [][]byte
+	TOC     []byte
+	Body    []byte
 }
 
-func newProcessedHtml(styles_count int) (*processedHtml, error) {
+func newProcessedHtml(styles_count, scripts_count int) (*processedHtml, error) {
 	if styles_count < 1 {
 		return nil, fmt.Errorf("Can't have less than one css")
 	}
 	return &processedHtml{
-		Style: make([][]byte, styles_count),
+		Styles:  make([][]byte, styles_count),
+		Scripts: make([][]byte, scripts_count),
 	}, nil
 }
