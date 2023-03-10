@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/alecthomas/participle/v2"
 	"github.com/alecthomas/participle/v2/lexer"
@@ -33,12 +34,38 @@ func main() {
 		participle.Lexer(document_lexer),
 	)
 
-	file_contents, err := os.ReadFile("input/syntax.test")
+	input_files, err := os.ReadDir(filepath.Join("input"))
 	if err != nil {
-		log.Fatalf("Init: Error: File could not be read: %s\n", err)
+		log.Fatalf("Opening source files failed with error: %s", err)
 	}
 
-	document, err := document_parser.ParseBytes("", file_contents)
+	buf := new(bytes.Buffer)
+
+	for _, input_file := range input_files {
+
+		if input_file.IsDir() {
+			log.Printf("Skipping a subdir %s in the input dir\n", input_file.Name())
+			continue
+		} else {
+			log.Printf("Reading from file %s\n", input_file.Name())
+		}
+
+		contents, err := os.ReadFile(filepath.Join("input", input_file.Name()))
+		if err != nil {
+			log.Printf("Reading file %s failed with error %s, skipping...\n", input_file.Name(), err)
+			continue
+		}
+		buf.Write(contents)
+	}
+
+	combined_file_contents := make([]byte, buf.Len())
+
+	_, err = buf.Read(combined_file_contents)
+	if err != nil {
+		log.Fatalf("Reading from combined input file buffer failed with error %s\n", err)
+	}
+
+	document, err := document_parser.ParseBytes("", combined_file_contents)
 	if err != nil {
 		log.Fatalf("Parser: Error: File could not be parsed: %s\n", err)
 	}
@@ -92,6 +119,25 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error writing to ouput: %s\n", err)
 	}
+
+	err = os.Mkdir(filepath.Join("output", "img"), 0755)
+	if err != nil {
+		log.Fatalf("Creating directory failed with error %s\n", err)
+	}
+
+	for _, v := range images.dump() {
+		input, err := os.ReadFile(filepath.Join("input", "img", v))
+		if err != nil {
+			log.Printf("Reading image %s failed with error %s, skipping...\n", v, err)
+			continue
+		}
+		err = os.WriteFile(filepath.Join("output", "img", v), input, 0755)
+		if err != nil {
+			log.Printf("Writing to file %s failed with error %s, skipping...\n", v, err)
+			continue
+		}
+	}
+
 }
 
 type processedHtml struct {

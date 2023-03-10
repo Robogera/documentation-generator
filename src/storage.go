@@ -59,8 +59,14 @@ func newImageStorage() *ImageStorage {
 	}
 }
 
-func (images *ImageStorage) copy() error {
-	return nil
+func (images *ImageStorage) dump() []string {
+
+	result := make([]string, 0, len(images.Storage))
+
+	for k, _ := range images.Storage {
+		result = append(result, k)
+	}
+	return result
 }
 
 func (storage *ImageStorage) push(new_link string) {
