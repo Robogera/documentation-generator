@@ -37,6 +37,7 @@ body figure {
 }
 
 .inline-code {
+  font-size: 0.8em;
 	font-family: monospace;
 	white-space: nowrap;
 	color: var(--accent);
@@ -54,4 +55,13 @@ body figure {
 	height: 100%;
 	margin: auto;
 	object-fit: contain;
+  page-break-before: avoid;
+}
+
+@media print {
+
+	.noprint,
+	.noprint * {
+		display: none !important;
+	}
 }

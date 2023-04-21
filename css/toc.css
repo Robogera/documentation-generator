@@ -1,5 +1,5 @@
 .toc {
-  width: 60%;
+  width: 70%;
   text-align: left;
   margin-right: auto;
   border-radius: 10px;
@@ -11,6 +11,10 @@
   line-height: 1em;
   color: var(--foreground);
   background-color: var(--table-even);
+}
+
+.toc * {
+  text-align: left;
 }
 
 .toc:before {

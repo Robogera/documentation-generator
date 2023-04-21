@@ -6,6 +6,7 @@
 	width: 90%;
 	overflow: hidden;
 	margin: auto;
+  page-break-before: avoid;
 }
 
 .buttons thead {
@@ -46,25 +47,39 @@
 	background-color: var(--table-even);
 }
 
+.buttons tr, td {
+  page-break-inside: avoid;
+}
+
 .buttons p {
 	text-align: left;
 	padding-right: 1em;
 }
 
 .grid {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	grid-auto-rows: auto;
-	grid-gap: 5px;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	column-gap: 5px;
+	row-gap: 5px;
+	flex-wrap: wrap;
 	width: 100%;
+  height: 100%;
+	margin: auto;
 }
 
-.grid-image {
-	width: 100%;
-	height: 100%;
+.wide-image,
+.normal-image {
+	float: center;
 	object-fit: contain;
 }
 
-.wide-element {
-	grid-column: span 2;
+.normal-image {
+	width: 31%;
+}
+
+.wide-image {
+	width: calc(31% * 3 + 5px * 2);
 }
