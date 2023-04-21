@@ -136,7 +136,7 @@ func main() {
 
 	err = os.Mkdir(filepath.Join("output", "img"), 0755)
 	if err != nil {
-		log.Fatalf("Creating directory failed with error %s\n", err)
+		log.Printf("Creating directory failed with error %s. Attempting to copy files anyway...\n", err)
 	}
 
 	for _, v := range images.dump() {

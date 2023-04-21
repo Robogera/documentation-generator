@@ -83,5 +83,5 @@ func (table Table) Serve(images *ImageStorage, ids *IdStorage, links *LinkStorag
 	// 	return nil, err
 	// }
 
-	return serve(processed_table, "<div class=\"wrapper\"><table class=\"buttons\" id=\"{{ printf \"%s\" .ID }}\"><colgroup><col style=\"width:22%;\"><col style=\"width:78%;\"></colgroup><thead><tr><th colspan=\"2\">{{ printf \"%s\" .Title }}</th></tr><tr><th>Элемент</th><th>Функция</th></tr></thead><tbody>{{ range .Rows }}<tr><th><div class=\"grid\">{{ range .Images }}<div{{ if .IsWide }} class=\"wide-element\"{{ end }}><img src=\"{{ printf \"%s\" .Path }}\" class=\"grid-image\"></div>{{ end }}</div></th><th>{{ range .Paragraphs }}{{ printf \"%s\" . }}{{ end }}</th></tr>{{ end }}</tbody></table></div>")
+	return serve(processed_table, "<div class=\"wrapper\"><table class=\"buttons\" id=\"{{ printf \"%s\" .ID }}\"><colgroup><col style=\"width:30%;\"><col style=\"width:70%;\"></colgroup><thead><tr><th colspan=\"2\">{{ printf \"%s\" .Title }}</th></tr><tr><th>Элемент</th><th>Функция</th></tr></thead><tbody>{{ range .Rows }}<tr><th><div class=\"grid\">{{ range .Images }}<img src=\"{{ printf \"%s\" .Path }}\" class={{ if .IsWide }}\"wide-image\"{{ else }}\"normal-image\"{{ end }}>{{ end }}</div></th><th>{{ range .Paragraphs }}{{ printf \"%s\" . }}{{ end }}</th></tr>{{ end }}</tbody></table></div>")
 }

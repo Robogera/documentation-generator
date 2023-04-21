@@ -75,7 +75,7 @@ func (entry Entry) Serve(headers *HeaderStorage, images *ImageStorage, ids *IdSt
 		return entry.Header.Serve(headers, ids)
 	case "*main.List":
 		log.Printf("List found at %s\n", entry.Pos.String())
-		return entry.List.Serve(links)
+		return entry.List.Serve(links, ids)
 	case "*main.Image":
 		log.Printf("Image found at %s\n", entry.Pos.String())
 		return entry.Image.Serve(links, images, ids)
@@ -126,7 +126,12 @@ func (elem ParagraphElement) Serve(links *LinkStorage) ([]byte, error) {
 	}
 }
 
-func (list List) Serve(links *LinkStorage) ([]byte, error) {
+func (list List) Serve(links *LinkStorage, ids *IdStorage) ([]byte, error) {
+
+	id, err := ids.push(list.ID)
+	if err != nil {
+		return nil, fmt.Errorf("Serving list error: %s", err)
+	}
 
 	paragraphs := make([][]byte, len(list.Paragraphs))
 
@@ -138,7 +143,15 @@ func (list List) Serve(links *LinkStorage) ([]byte, error) {
 		paragraphs[i] = contents
 	}
 
-	return serve(paragraphs, "<ol>{{ range . }}<li class=\"listelement\">{{ printf \"%s\" . }}</li>{{ end }}</ol>")
+	processed_data := struct {
+		Paragraphs [][]byte
+		ID         []byte
+	}{
+		Paragraphs: paragraphs,
+		ID: id,
+	}
+
+	return serve(processed_data, "<ol id=\"{{ printf \"%s\" .ID }}\">{{ range .Paragraphs }}<li class=\"listelement\">{{ printf \"%s\" . }}</li>{{ end }}</ol>")
 }
 
 func (image Image) Serve(links *LinkStorage, images *ImageStorage, ids *IdStorage) ([]byte, error) {
@@ -174,7 +187,7 @@ func (image Image) Serve(links *LinkStorage, images *ImageStorage, ids *IdStorag
 		Paragraphs: processed_paragraphs,
 	}
 
-	return serve(processed_data, "<figure name={{ printf \"%s\" .ID }}><div class=\"image-wrapper\"><img class=\"big-image\" src=\"{{ printf \"%s\" .Path }}\"></img></div><figcaption class=\"image-caption\">{{ range .Paragraphs }}{{ printf \"%s\" . }}{{ end }}</figcaption></figure>")
+	return serve(processed_data, "<figure id={{ printf \"%s\" .ID }}><div class=\"image-wrapper\"><img class=\"big-image\" src=\"{{ printf \"%s\" .Path }}\"></img></div><figcaption class=\"image-caption\">{{ range .Paragraphs }}{{ printf \"%s\" . }}{{ end }}</figcaption></figure>")
 }
 
 func (path Path) Serve(images *ImageStorage) ([]byte, error) {
